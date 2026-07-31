@@ -1,0 +1,28 @@
+<html>
+
+<head>
+  <title>Octal calendar</title>
+
+</head>
+
+<body>
+  <main id="app"></main>
+  <script type="module">
+    import { createWebHashHistory, createRouter } from 'vue-router'
+    import '@unocss/reset/tailwind.css'
+    import 'virtual:uno.css'
+    import { createApp } from 'vue'
+    import App from './src/App.vue'
+    import { routes, handleHotUpdate } from 'vue-router/auto-routes'
+
+    const router = createRouter({
+      history: createWebHashHistory(),
+      routes,
+    })
+
+    createApp(App).use(router).mount('#app')
+
+  </script>
+</body>
+
+</html>

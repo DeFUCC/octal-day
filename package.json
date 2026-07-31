@@ -1,0 +1,35 @@
+{
+  "name": "octal-calendar",
+  "version": "0.1.0",
+  "engines": {
+    "node": "^24.x"
+  },
+  "packageManager": "pnpm@11.15.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@unocss/reset": "^66.7.5",
+    "@vueuse/core": "^14.3.0",
+    "@vueuse/gesture": "^2.0.0",
+    "@vueuse/math": "^14.3.0",
+    "astronomy-engine": "^2.1.19",
+    "globe.gl": "^2.46.1",
+    "mdld-parse": "^1.0.4",
+    "three": "^0.185.1",
+    "vue": "^3.6.0-beta.12",
+    "vue-router": "^5.2.0"
+  },
+  "devDependencies": {
+    "@unocss/extractor-pug": "^66.7.5",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "@vue/language-plugin-pug": "^3.3.7",
+    "pug": "^3.0.4",
+    "unocss": "^66.7.5",
+    "vite": "^8.1.5",
+    "vite-plugin-singlefile": "^2.3.3"
+  }
+}

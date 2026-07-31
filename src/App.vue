@@ -1,0 +1,68 @@
+<script setup>
+import DatePage from './pages/date.vue'
+
+</script>
+
+<template lang="pug">
+main.h-100svh.flex.flex-col
+  .flex
+    .flex.flex-row.gap-2.bg-teal-100.p-4.justify-between.items-center.flex-auto.flex-wrap
+      RouterLink.text-2xl.font-bold(to="/") Octal time
+      nav.flex.flex-wrap.gap-2
+        RouterLink(to="/day") Day
+        RouterLink(to="/octave") Octave
+        RouterLink(to="/earth") Earth
+        RouterLink(to="/sun") Sun
+        RouterLink(to="/moon") Moon
+        RouterLink(to="/venus") Venus
+  
+  router-view.flex-1(v-slot="{ Component }")
+      transition(name="fade", mode="out-in")
+        keep-alive(:max="10")
+          component(:is="Component")
+</template>
+
+<style lang="postcss">
+a:hover {
+  @apply underline;
+}
+
+a.router-active {
+  @apply text-red;
+}
+
+body,
+html {
+  overflow: hidden;
+  height: 100%;
+  overscroll-behavior: none;
+  background-color: #222;
+}
+
+/* FADE */
+
+.fade {
+  transition: all 0.5s ease;
+}
+
+.fade-enter-active {
+  transition: all 0.2s ease;
+}
+
+.fade-leave-active {
+  opacity: 0;
+  transition: all 0.1s ease;
+}
+
+.fade-leave-to {
+  opacity: 0;
+}
+
+.fade-enter-from {
+  opacity: 0;
+}
+
+.fade-enter-to {
+  opacity: 1;
+}
+</style>
