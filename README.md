@@ -1,8 +1,6 @@
-# Octal calendar research and design
+# Octal time research and design
 
-A proposal of a modern science based cosmic calendar inspired by the Venus-Earth resonance and beauty of the Octaeteris. 
-
-
+A proposal of a modern science based cosmic calendar and time inspired by the Venus-Earth resonance and beauty of the Octaeteris. 
 
 ===
 
