@@ -11,6 +11,7 @@ import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } f
 // Map imports
 import globeImage from '../../maps/2k_earth_daymap.jpg?base64'
 import nightImage from '../../maps/2k_earth_nightmap.jpg?base64'
+import nightSky from '../../maps/night-sky.png?base64'
 
 const globeViz = ref(null)
 let globe = null
@@ -109,7 +110,7 @@ onMounted(async () => {
   // 3. Initialize Globe
   globe = new Globe(globeViz.value)
     .globeMaterial(dayNightMaterial)
-    .backgroundImageUrl('../../maps/night-sky.png')
+    .backgroundImageUrl(nightSky)
     .atmosphereColor('#3a228a')
     .atmosphereAltitude(0.1)
     .pointAltitude('size')
