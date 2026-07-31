@@ -1,5 +1,7 @@
 import { AstroTime, SearchTransit, NextTransit, Observer, HourAngle, Body, SearchRelativeLongitude, Illumination, MoonPhase, Seasons } from 'astronomy-engine'
 
+import { Temporal } from '@js-temporal/polyfill';
+
 
 const JD0 = new Date('2000-01-01T00:00:00Z')
 const jd0Astro = new AstroTime(JD0);
