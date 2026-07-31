@@ -2,8 +2,8 @@
 import { useNow } from '@vueuse/core'
 import { computed, ref } from 'vue'
 
-import { transits, formatWithTemporal } from '../astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js';
+import { transits, formatWithTemporal } from '../../src/astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js';
 import Globe from 'globe.gl'
 import { onMounted } from 'vue'
 import globeImage from '../../maps/2k_sun.jpg?base64'

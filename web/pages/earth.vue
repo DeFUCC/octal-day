@@ -5,8 +5,8 @@ import * as THREE from 'three'
 import { AstroTime, Body, Equator, SiderealTime, Observer } from 'astronomy-engine'
 
 // Your existing imports
-import { transits, getOfflineSolarFraction, formatWithTemporal } from '../astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js'
+import { transits, getOfflineSolarFraction, formatWithTemporal } from '../../src/astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js'
 
 // Map imports
 import globeImage from '../../maps/2k_earth_daymap.jpg?base64'

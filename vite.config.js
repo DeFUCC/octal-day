@@ -26,6 +26,9 @@ export default defineConfig({
   },
   plugins: [
     VueRouter({
+      routesFolder: [
+        { src: "web/pages" }
+      ]
     }),
     UnoCSS({
       transformers: [transformerDirectives()],

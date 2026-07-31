@@ -1,7 +1,7 @@
 <script setup>
 import DayLine from './line.vue'
-import { transits, formatWithTemporal } from '../astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, coord, arrows, trigrams } from '../useDay.js';
+import { transits, formatWithTemporal } from '../../src/astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, coord, arrows, trigrams } from '../../src/useDay.js';
 
 async function getLocation() {
   let position

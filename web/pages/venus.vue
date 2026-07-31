@@ -2,8 +2,8 @@
 import { useNow } from '@vueuse/core'
 import { computed } from 'vue'
 
-import { transits, ics, formatWithTemporal } from '../astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js';
+import { transits, ics, formatWithTemporal } from '../../src/astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js';
 
 
 const icProgress = { before: [], after: [] }
