@@ -3,6 +3,12 @@ import { AstroTime, SearchTransit, NextTransit, Observer, HourAngle, Body, Searc
 export const astroTime = new AstroTime(new Date())
 export const jd0Astro = new AstroTime(0);
 export const firstTransit = SearchTransit(Body.Venus, jd0Astro);
+export const transits = [firstTransit]
+for (let t = 1; t < 6; t++) {
+  transits[t] = NextTransit(Body.Venus, transits[t - 1].finish)
+}
+
+
 export const startYear = firstTransit.peak.date.getUTCFullYear()
 export const startSolstice = Seasons(startYear).jun_solstice
 export const currentYear = astroTime.date.getUTCFullYear()
@@ -15,9 +21,9 @@ export const currentStart = Seasons(startYear + octaeteride * 8).jun_solstice
 export const dayCount = Math.floor(astroTime.ut - currentStart.ut)
 export const octaveCount = Math.floor(dayCount / 8)
 export const seasonCount = Math.floor(dayCount / 73)
-export const moonQuarter = SearchMoonQuarter(astroTime)
-export const nextMoon = NextMoonQuarter(NextMoonQuarter(NextMoonQuarter(NextMoonQuarter(moonQuarter))))
-export const moonCycle = nextMoon.time.ut - moonQuarter.time.ut
+export const startMoon = NextMoonQuarter(SearchMoonQuarter(firstTransit.peak))
+export const nextMoon = NextMoonQuarter(SearchMoonQuarter(transits[1].peak))
+export const moonCycle = (nextMoon.time.ut - startMoon.time.ut) / 99
 
 
 export const offsetMinutes = (new Date()).getTimezoneOffset()
@@ -29,10 +35,6 @@ export const startOffset = getOfflineSolarFraction(startSolstice)
 export const CALENDAR_EPOCH_UT = startSolstice.ut - startOffset;
 export const CALENDAR_EPOCH = new AstroTime(CALENDAR_EPOCH_UT);
 
-export const transits = [firstTransit]
-for (let t = 1; t < 6; t++) {
-  transits[t] = NextTransit(Body.Venus, transits[t - 1].finish)
-}
 
 export const octaeterides = [firstTransit.finish]
 for (let ic = 1; ic < 33; ic++) {

@@ -4,4 +4,4 @@ A proposal of a modern science based cosmic calendar and time inspired by the Ve
 
 ===
 
-> The Local Epoch is the exact Universal Time (UT) of the local solar midnight that begins the calendar day of the first Solstice following a Venus Transit.
+> The Local Epoch is the exact Universal Time (UT) of the local solar midnight immediately preceding (or coinciding with) the exact astronomical moment of the first Solstice following a Venus Transit.
