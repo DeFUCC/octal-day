@@ -1,5 +1,5 @@
 <script setup>
-import { transits, getOfflineSolarFraction, formatWithTemporal } from '../../src/astro.js'
+import { transits } from '../../src/astro.js'
 import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, arrows } from '../../src/useDay.js';
 
 

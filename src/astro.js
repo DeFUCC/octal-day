@@ -1,49 +1,46 @@
-import { AstroTime, SearchTransit, NextTransit, Observer, HourAngle, Body, SearchRelativeLongitude, Illumination, MoonPhase, Seasons } from 'astronomy-engine'
+import { AstroTime, SearchTransit, NextTransit, Observer, HourAngle, Body, SearchRelativeLongitude, Illumination, MoonPhase, Seasons, SearchMoonQuarter, NextMoonQuarter } from 'astronomy-engine'
 
-import { Temporal } from '@js-temporal/polyfill';
+export const astroTime = new AstroTime(new Date())
+export const jd0Astro = new AstroTime(0);
+export const firstTransit = SearchTransit(Body.Venus, jd0Astro);
+export const startYear = firstTransit.peak.date.getUTCFullYear()
+export const startSolstice = Seasons(startYear).jun_solstice
+export const currentYear = astroTime.date.getUTCFullYear()
+export const recentSolstice = Seasons(currentYear).jun_solstice.ut < astroTime.ut ? Seasons(currentYear).jun_solstice : Seasons(currentYear - 1).jun_solstice
+export const yearLength = Seasons(currentYear).jun_solstice.ut - Seasons(currentYear - 1).jun_solstice.ut
+export const yearsPassed = Math.round((recentSolstice.ut - startSolstice.ut) / yearLength)
+export const octaeteride = Math.floor(yearsPassed / 8)
+export const year = yearsPassed - octaeteride * 8
+export const currentStart = Seasons(startYear + octaeteride * 8).jun_solstice
+export const dayCount = Math.floor(astroTime.ut - currentStart.ut)
+export const octaveCount = Math.floor(dayCount / 8)
+export const seasonCount = Math.floor(dayCount / 73)
+export const moonQuarter = SearchMoonQuarter(astroTime)
+export const nextMoon = NextMoonQuarter(NextMoonQuarter(NextMoonQuarter(NextMoonQuarter(moonQuarter))))
+export const moonCycle = nextMoon.time.ut - moonQuarter.time.ut
 
 
-const JD0 = new Date('2000-01-01T00:00:00Z')
-const jd0Astro = new AstroTime(JD0);
-const firstTransit = SearchTransit(Body.Venus, jd0Astro);
-const startYear = firstTransit.peak.date.getUTCFullYear()
-
-const offsetMinutes = JD0.getTimezoneOffset()
-const offsetHours = -offsetMinutes / 60;
-const estimatedLongitude = offsetHours * 15;
-const offlineObserver = new Observer(0, estimatedLongitude, 0);
+export const offsetMinutes = (new Date()).getTimezoneOffset()
+export const offsetHours = -offsetMinutes / 60;
+export const estimatedLongitude = offsetHours * 15;
 
 
-const startSolstice = findFirstSolsticeAfter(firstTransit.finish)
-const startOffset = getOfflineSolarFraction(startSolstice)
-const CALENDAR_EPOCH_UT = startSolstice.ut - startOffset;
-const CALENDAR_EPOCH = new AstroTime(CALENDAR_EPOCH_UT);
+export const startOffset = getOfflineSolarFraction(startSolstice)
+export const CALENDAR_EPOCH_UT = startSolstice.ut - startOffset;
+export const CALENDAR_EPOCH = new AstroTime(CALENDAR_EPOCH_UT);
 
-const transits = [firstTransit]
+export const transits = [firstTransit]
 for (let t = 1; t < 6; t++) {
   transits[t] = NextTransit(Body.Venus, transits[t - 1].finish)
 }
 
-
-function getOfflineSolarFraction(astroTime) {
-  const sunHourAngle = HourAngle(Body.Sun, astroTime, offlineObserver);
-  const fraction = (sunHourAngle + 12) / 24;
-  return ((fraction % 1) + 1) % 1;
-}
-
-function formatWithTemporal(utcIsoString) {
-  const zdt = Temporal.Instant.from(utcIsoString)
-    .toZonedDateTimeISO(Temporal.Now.timeZoneId());
-  return `${zdt.toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', })}, ${zdt.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', })}`;
+export const octaeterides = [firstTransit.finish]
+for (let ic = 1; ic < 33; ic++) {
+  octaeterides.push(findNextIC(octaeterides[ic - 1].AddDays(2900.0)))
 }
 
 
-const ics = [firstTransit.finish]
-for (let ic = 1; ic < 32; ic++) {
-  ics.push(findNextIC(ics[ic - 1].AddDays(2900.0)))
-}
-
-function findNextIC(startDate) {
+export function findNextIC(startDate) {
   let currentTime = new AstroTime(startDate);
 
   while (true) {
@@ -57,7 +54,15 @@ function findNextIC(startDate) {
   }
 }
 
-function getMoonPhase(astroTime) {
+
+export function getOfflineSolarFraction(astroTime) {
+  const sunHourAngle = HourAngle(Body.Sun, astroTime, new Observer(0, estimatedLongitude, 0));
+  const fraction = (sunHourAngle + 12) / 24;
+  return ((fraction % 1) + 1) % 1;
+}
+
+
+export function getMoonPhase(astroTime) {
   const angle = MoonPhase(astroTime);
   const illum = Illumination(Body.Moon, astroTime);
   const age = (angle / 360) * 29.53;
@@ -70,14 +75,3 @@ function getMoonPhase(astroTime) {
   };
 }
 
-function findFirstSolsticeAfter(afterTime) {
-  let year = afterTime.date.getUTCFullYear();
-  while (true) {
-    const s = Seasons(year);
-    if (s.jun_solstice.ut > afterTime.ut) return s.jun_solstice;
-    if (s.dec_solstice.ut > afterTime.ut) return s.dec_solstice;
-    year++;
-  }
-}
-
-export { firstTransit, getOfflineSolarFraction, getMoonPhase, transits, ics, formatWithTemporal, CALENDAR_EPOCH, CALENDAR_EPOCH_UT, estimatedLongitude }

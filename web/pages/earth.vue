@@ -5,8 +5,8 @@ import * as THREE from 'three'
 import { AstroTime, Body, Equator, SiderealTime, Observer } from 'astronomy-engine'
 
 // Your existing imports
-import { transits, getOfflineSolarFraction, formatWithTemporal } from '../../src/astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js'
+import { transits } from '../../src/astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, coord, arrows, trigrams } from '../../src/useDay.js'
 
 // Map imports
 import globeImage from '../../maps/2k_earth_daymap.jpg?base64'
@@ -134,11 +134,38 @@ onUnmounted(() => {
   if (animationFrameId) cancelAnimationFrame(animationFrameId)
   if (globe) globe._destructor()
 })
+
+
+//=========
+
+
+
+async function getLocation() {
+  let position
+  try {
+    position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+    });
+    coord.value.longitude = position.coords.longitude
+    coord.value.latitude = position.coords.latitude
+    coord.value.altitude = position.coords.altitude || 0
+  } catch (e) { console.log(e) }
+
+}
 </script>
 
 <template lang="pug">
 section
   #globeViz(ref="globeViz")
+  dialog(open)
+    .p-4.flex.flex-wrap.gap-2
+      label.flex.gap-2.items-center.flex-1
+        .p-0 Lat
+        input.p-2(v-model="coord.latitude" placeholder="45.0" )
+      label.flex.gap-2.items-center.flex-1
+        .p-0 Long
+        input.p-2(v-model="coord.longitude" placeholder="45.0" )
+      button.flex-full.p-2.bg-dark-200.text-white.rounded-lg(@click="getLocation()") Locate
 </template>
 
 <style scoped>

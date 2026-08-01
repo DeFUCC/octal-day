@@ -1,40 +1,31 @@
 <script setup>
 import DayLine from './line.vue'
-import { transits, formatWithTemporal } from '../../src/astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, coord, arrows, trigrams } from '../../src/useDay.js';
+import { transits } from '../../src/astro.js'
+import { computed } from 'vue'
+import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, colors, coord, arrows, trigrams, octime, } from '../../src/useDay.js';
 
-async function getLocation() {
-  let position
-  try {
-    position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-    });
-    coord.value.longitude = position.coords.longitude
-    coord.value.latitude = position.coords.latitude
-    coord.value.altitude = position.coords.altitude || 0
-  } catch (e) { console.log(e) }
 
-}
 
 </script>
 
 <template lang="pug">
-section.bg-yellow-50
+section.bg-yellow-50.flex.flex-col.gap-2.p-2.overflow-y-scroll
+  .flex.gap-2.justify-between
+    .font-mono 
+    .flex-1
+    .font-mono {{octime}}
+  .flex.flex-col.gap-2.justify-around.shadow-lg.rounded-lg(v-for="(level,l) in levels" :key="level" )
+    .p-2.flex.gap-4.font-mono.items-center.flex-1.transition-500(:style="{backgroundColor:colors[oct[l]]+'11'}") 
+      .text-2xl {{oct[l]}}
+      .op-90.font-mono.flex-1 {{level}}
+      .flex-1
+      .text-2xl {{arrows[oct[l]]}}
+      .flex-1 
+      .text-2xl {{trigrams[oct[l]]}}
+    .flex
+      .p-1.m-1.flex-1.transition.border-1.border-dark-100.border-op-50.shadow.shadow-inset.rounded-xl(v-for="(row,r) in 8" :style="{backgroundColor:r==oct[l]?colors[oct[l]]:'transparent'}")
+    .p-2.bg-light-200.flex.flex-col.gap-2
+      .op-30.text-xs {{Number('0o'+oct.slice(0,l+1))}}/{{Math.pow(8,l+1)}}
 
-  .flex.flex-wrap.gap-2.justify-around.p-2
-    .p-2.flex.flex-col.gap-0.items-center.flex-1.transition.rounded(:style="{backgroundColor:colors[octalDayFraction[l]]+1}" v-for="(level,l) in levels" :key="level" ) 
-      .text-2xl {{trigrams[octalDayFraction[l]]}}
-      .text-2xl {{arrows[octalDayFraction[l]]}}
-      .text-2xl.font-bold.font-mono {{octalDayFraction[l]}}
-      .op-40 {{level}}
-  DayLine.m-4
 
-  .p-4.flex.flex-wrap.gap-2
-    label.flex.gap-2.items-center.flex-1
-      .p-0 Lat
-      input.p-2(v-model="coord.latitude" placeholder="45.0" )
-    label.flex.gap-2.items-center.flex-1
-      .p-0 Long
-      input.p-2(v-model="coord.longitude" placeholder="45.0" )
-    button.flex-full.p-2.bg-dark-200.text-white.rounded-lg(@click="getLocation()") Locate
 </template>

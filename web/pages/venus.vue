@@ -2,13 +2,20 @@
 import { useNow } from '@vueuse/core'
 import { computed } from 'vue'
 
-import { transits, ics, formatWithTemporal } from '../../src/astro.js'
+import { transits, octaeterides } from '../../src/astro.js'
 import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js';
 
+import { Temporal } from '@js-temporal/polyfill';
+
+function formatWithTemporal(utcIsoString) {
+  const zdt = Temporal.Instant.from(utcIsoString)
+    .toZonedDateTimeISO(Temporal.Now.timeZoneId());
+  return `${zdt.toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit', })}, ${zdt.toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', })}`;
+}
 
 const icProgress = { before: [], after: [] }
 
-ics.forEach(ic => {
+octaeterides.forEach(ic => {
   if (ic.ut < astro.value.ut) {
     icProgress.before.push(ic)
   } else {
@@ -33,12 +40,12 @@ section.bg-yellow-50.text-sm.overflow-y-scroll
 
     
     .flex.flex-col
-      .text-xs(v-for="(ic,i) in icProgress.before" :key="ic") {{`${i}`.padStart(3, '0')}}: {{formatWithTemporal(ic)}}
+      .text-xs(v-for="(ic,i) in icProgress.before" :key="ic") Octaeteris {{`${i.toString(8)}`.padStart(3, '0')}}: {{formatWithTemporal(ic)}}
 
     .my-4 NOW 
 
     .flex.flex-col
-      .text-xs(v-for="(ic,i) in icProgress.after" :key="ic") {{`${i+icProgress.before.length}`.padStart(3, '0')}}: {{formatWithTemporal(ic)}}
+      .text-xs(v-for="(ic,i) in icProgress.after" :key="ic") Octaeteris {{`${(i+icProgress.before.length).toString(8)}`.padStart(3, '0')}}: {{formatWithTemporal(ic)}}
 
     h4 T4: {{formatWithTemporal(transits[2].peak)}}
     h4 D2: {{transits[3].peak.ut-transits[2].peak.ut}} days

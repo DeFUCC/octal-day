@@ -20,13 +20,22 @@ const octalDayFraction = computed(() => {
   const digits = fractionalPart.padEnd(5, '0');
   return digits
 })
+
+export const octime = computed(() => {
+  return Array(3).fill(null).map((_, i) => octalDayFraction.value[i * 2] + octalDayFraction.value[i * 2 + 1]).join(':')
+})
+
 const moon = computed(() => getMoonPhase(astro.value))
 
-const colors = ['#000', '#00F', '#0F0', '#F00', '#FF0', '#F0F', '#0FF', '#FFF']
-const textColors = ['#fff', '#fff', '#000', '#000', '#000', '#000', '#000', '#000',]
+const textColors = ['#ffffff', '#fff', '#000', '#000', '#000', '#000', '#000', '#000',]
 const levels = ['Octant', 'Session', 'Topic', 'Turn', 'Phrase', 'Beat']
+
+
+const colors = ['#000000', '#0000Ff', '#00FF00', '#FF0000', '#FFFF00', '#FF00FF', '#00FFFF', '#CCCCCC']
 const arrows = ['↓', '↙', '←', '↖', '↑', '↗', '→', '↘'];
-const trigrams = ["☷", "☶", "☵", "☴", "☳", "☲", "☱", "☰"]
+const trigrams = ["☷", "☶", "☵", "☴", "☳", "☲", "☱", "☰"];
+
+
 
 
 export { now, astro, octaDays, dayFraction, octalDayFraction, colors, textColors, levels, moon, coord, arrows, trigrams }
