@@ -31,7 +31,7 @@ const textColors = ['#ffffff', '#fff', '#000', '#000', '#000', '#000', '#000', '
 const levels = ['Octant', 'Session', 'Topic', 'Turn', 'Phrase', 'Beat']
 const planets = ['Mercury', 'Venus', 'Earth', 'Mars', 'Jupiter', 'Saturn', 'Uranus', 'Neptune']
 
-const colors = ['#000000', '#0000Ff', '#00FF00', '#FF0000', '#FFFF00', '#FF00FF', '#00FFFF', '#CCCCCC']
+const colors = ['#000000', '#0000FF', '#00FF00', '#FF0000', '#FFFF00', '#FF00FF', '#00FFFF', '#CCCCCC']
 const arrows = ['↓', '↙', '←', '↖', '↑', '↗', '→', '↘'];
 const trigrams = ["☷", "☶", "☵", "☴", "☳", "☲", "☱", "☰"];
 
