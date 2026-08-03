@@ -2,23 +2,22 @@
 </script>
 
 <template lang="pug">
-main.h-100svh.flex.flex-col
-  .flex
+main.h-100svh.flex.flex-col.items-center
+  .flex.w-full
     .flex.flex-row.gap-2.bg-teal-100.p-4.justify-between.items-center.flex-auto.flex-wrap
       RouterLink.text-2xl.font-bold(to="/") Octal time
       nav.flex.flex-wrap.gap-2
         RouterLink(to="/derivation") Derivation
         RouterLink(to="/day") Day
+        RouterLink(to="/table") Table
         RouterLink(to="/octave") Octave
-        RouterLink(to="/earth") Earth
-        RouterLink(to="/sun") Sun
         RouterLink(to="/moon") Moon
         RouterLink(to="/venus") Venus
   
-  router-view.flex-1(v-slot="{ Component }")
-      transition(name="fade", mode="out-in")
-        keep-alive(:max="10")
-          component(:is="Component")
+  router-view(v-slot="{ Component }")
+    transition(name="fade", mode="out-in")
+      keep-alive(:max="10")
+        component(:is="Component")
 </template>
 
 <style lang="postcss">

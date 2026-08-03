@@ -16,7 +16,7 @@ const marks = levels.map((level, l) => {
 </script>
 
 <template lang="pug">
-section.bg-orange-100.flex.flex-col
+section.bg-orange-100.flex.flex-col.w-95vw.h-80vh.mt-10vh
 
 
   .w-full.flex.flex-col.relative.flex-auto
