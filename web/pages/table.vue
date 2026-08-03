@@ -4,7 +4,7 @@ import { recentSolstice, octaeteride, year, currentStart, dayCount, octaveCount,
 import { now, astro, octaDays, octime, coord, dayFraction, octalDayFraction as odf, planets, moonPhases } from '../../src/useDay.js';
 import { computed } from 'vue'
 
-
+import { Elongation, Body } from 'astronomy-engine'
 
 </script>
 
@@ -21,9 +21,11 @@ section.border-1.bg-orange-50.shadow-xl.flex-auto.gap-2.flex.flex-col.items-cent
         .text-xs.op-30.font-mono {{currentStart.AddDays(o*8+p).date.toLocaleDateString()}}
         .font-mono {{(o*8+p).toString(8)}}
         .font-bold {{Math.floor((o*8+p)/73).toString(8)}}-{{(o*8+p-Math.floor((o*8+p)/73)*73).toString(8)}} 
-        .text-xs Y{{Math.floor(Math.floor((o*8+p)/73)/5).toString(8)}} V{{Math.floor(Math.floor((o*8+p)/73)/8).toString(8)}}
-        
-        .text-xs.op-50 {{moonPhases[Math.round(getMoonPhase(currentStart.AddDays(o*8+p).date).angle/360*8)%8]}}
+        .text-xs Y{{Math.floor(Math.floor((o*8+p)/73)/5).toString(8)}} V{{Math.floor(Math.floor((o*8+p)/73)/8).toString(8)}}{{Elongation(Body.Venus,currentStart.AddDays(o*8+p).date).visibility.slice(0,1).toUpperCase()}}
+        .flex.gap-2.items-center
+          .text-xs.op-50 {{moonPhases[Math.round(getMoonPhase(currentStart.AddDays(o*8+p).date).angle/360*8)%8]}}
+          
+          .rounded-full.bg-red.w-3.h-3.shadow-lg(:style="{backgroundColor: Elongation(Body.Venus,currentStart.AddDays(o*8+p).date).visibility =='morning' ? 'yellow': 'lightblue'}")
 
 </template>
 

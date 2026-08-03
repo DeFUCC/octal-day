@@ -20,3 +20,8 @@ test('supports negative-era conversions for ancient dates', () => {
   const encoded = dateToOctaDate(new Date('0100-01-01T00:00:00.000Z'));
   assert.ok(encoded.era < 0, `expected negative era for ancient dates, got ${encoded.era}`);
 });
+
+test('uses 243-year transit-cycle eras for larger spans', () => {
+  const encoded = dateToOctaDate(new Date('2245-06-21T00:00:00.000Z'));
+  assert.equal(encoded.era, 1, `expected the 243-year transit cycle to advance to era 1 after the first cycle, got ${encoded.era}`);
+});

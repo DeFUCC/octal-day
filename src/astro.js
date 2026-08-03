@@ -92,8 +92,8 @@ export const EPOCH_YEAR = 1760;
 export const EPOCH_SOLSTICE = Seasons(EPOCH_YEAR).jun_solstice;
 const DAYS_PER_OCTAETERIS = 2920;
 const OCTAETERIS_YEARS = 8;
-const OCTAETERIDES_PER_ERA = 30;
-const YEARS_PER_ERA = 240;
+const YEARS_PER_TRANSIT_CYCLE = 243;
+const OCTAETERIDES_PER_TRANSIT_CYCLE = Math.floor(YEARS_PER_TRANSIT_CYCLE / OCTAETERIS_YEARS);
 
 function getOctaeterisBoundary(year, longitude = estimatedLongitude) {
   const solstice = Seasons(year).jun_solstice;
@@ -127,8 +127,8 @@ export function dateToOctaDate(date, longitude = estimatedLongitude) {
   const day = Math.floor(elapsedDays);
   const fraction = elapsedDays - day;
   const absoluteOctaeteris = Math.floor((boundaryYear - epochYear) / OCTAETERIS_YEARS);
-  const era = Math.floor(absoluteOctaeteris / OCTAETERIDES_PER_ERA);
-  const octaeteris = absoluteOctaeteris - era * OCTAETERIDES_PER_ERA;
+  const era = Math.floor(absoluteOctaeteris / OCTAETERIDES_PER_TRANSIT_CYCLE);
+  const octaeteris = absoluteOctaeteris - era * OCTAETERIDES_PER_TRANSIT_CYCLE;
   const isWaiting = day >= DAYS_PER_OCTAETERIS;
 
   return {
@@ -151,7 +151,7 @@ export function octaDateToGregorian(octaDate, longitude = estimatedLongitude) {
     fraction: fractionValue = 0,
   } = octaDate ?? {};
 
-  const absoluteOctaeteris = eraValue * OCTAETERIDES_PER_ERA + octaeterisValue;
+  const absoluteOctaeteris = eraValue * OCTAETERIDES_PER_TRANSIT_CYCLE + octaeterisValue;
   const epochYear = startSolstice.date.getUTCFullYear();
   const boundaryYear = epochYear + absoluteOctaeteris * OCTAETERIS_YEARS;
   const boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
