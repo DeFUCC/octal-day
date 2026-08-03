@@ -12,7 +12,7 @@ const coord = useStorage('coords', {
 const now = useNow()
 const astro = computed(() => new AstroTime(now.value))
 const octaDays = computed(() => astro.value.ut - CALENDAR_EPOCH.ut)
-const dayFraction = computed(() => getOfflineSolarFraction(astro.value))
+const dayFraction = computed(() => getOfflineSolarFraction(astro.value, coord.longitude))
 const octalDayFraction = computed(() => {
   const safeFraction = Math.min(dayFraction.value, 0.999999999);
   const octalString = safeFraction.toString(8);

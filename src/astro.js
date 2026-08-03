@@ -57,8 +57,8 @@ export function findNextIC(startDate) {
 }
 
 
-export function getOfflineSolarFraction(astroTime) {
-  const sunHourAngle = HourAngle(Body.Sun, astroTime, new Observer(0, estimatedLongitude, 0));
+export function getOfflineSolarFraction(astroTime, longitutde = estimatedLongitude) {
+  const sunHourAngle = HourAngle(Body.Sun, astroTime, new Observer(0, longitutde, 0));
   const fraction = (sunHourAngle + 12) / 24;
   return ((fraction % 1) + 1) % 1;
 }

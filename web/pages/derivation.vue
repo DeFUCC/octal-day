@@ -1,7 +1,7 @@
 <script setup>
 
 import { recentSolstice, octaeteride, year, currentStart, dayCount, octaveCount, seasonCount, transits, jd0Astro, yearLength, startMoon, nextMoon, moonCycle, startSolstice, CALENDAR_EPOCH, yearsPassed } from '../../src/astro.js';
-import { now, astro, octaDays, octime, dayFraction, octalDayFraction as odf } from '../../src/useDay.js';
+import { now, astro, octaDays, octime, coord, dayFraction, octalDayFraction as odf } from '../../src/useDay.js';
 import { computed } from 'vue'
 
 function octal(n, s) {
@@ -9,18 +9,52 @@ function octal(n, s) {
   if (s) { return oct.slice(0, s) } else { return oct }
 }
 
+
+async function getLocation() {
+  let position
+  try {
+    position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
+    });
+    coord.value.longitude = position.coords.longitude
+    coord.value.latitude = position.coords.latitude
+    coord.value.altitude = position.coords.altitude || 0
+  } catch (e) { console.log(e) }
+
+}
+
+const geoCapable = navigator?.geolocation
 </script>
 
 <template lang="pug">
 section.border-1.bg-orange-50.shadow-xl.flex-auto.p-4.gap-2.flex.flex-col.overflow-y-scroll.text-sm.max-w-55ch.mx-auto.my-2px
   blockquote.bg-orange-100.p-2.text-xl.font-italic What time is it now? 
   
-  p Your computer thinks it is <code>{{+now}}</code> microseconds since <code>{{new Date(0).toLocaleDateString()}}</code>, Gregorian calendar will show <code>{{now.toLocaleDateString()}}</code> and the atomic clock would display <code>{{now.toLocaleTimeString()}}</code>, but what if we would use the Solar system as the time keeping device? We would study cycles.
+  p Your computer thinks it is <code>{{+now}}</code> milliseconds since midnight <code>{{new Date(0).toLocaleDateString()}}</code>, Gregorian calendar will show <code>{{now.toLocaleDateString()}}</code> and the digital clock would display <code>{{now.toLocaleTimeString()}}</code>. It is the <code>{{astro.ut.toFixed(5)}}</code> Julian Day now from astronomical Epoch tables from noon <code>{{jd0Astro.date.toLocaleDateString()}}</code> along the prime meridian. 
+  
+  p What if we would use the Solar system itself as the time keeping device? We would study cycles. First - the orbital rates for all the 8 planets. Of course starting with the Earth and its rotation.
 
-  p The astronomical epoch for modern ephemeris starts on noon <code>{{jd0Astro.date.toLocaleDateString()}}</code> along the prime meridian. Astronomers just count continuous Julian Days since then - it is the <code>{{astro.ut.toFixed(5)}}</code> day now. This is a very useful number to calculate durations and periodicity, but it is defined at another location and the boundary is not how we think of days - the day changes at local midnight in most real world cultures. For the midnight we can just add <code>0.5</code> day to the JD, but to get the local offset we need to know where you are now on the planet. Your computer provides the timezone information, so we can estimate your location from the offset minutes we get from the browser - <code>{{(new Date()).getTimezoneOffset()}}</code> min, that is <code>{{(new Date()).getTimezoneOffset()/60}}</code> hours - this makes us guess your longitude as <code>{{(new Date()).getTimezoneOffset()/4}}&deg;</code>.
+  p To define our basis unit, we need to observe the Sun shadow throughout the day and mark the moment the Sun was at the highest point. Observe and mark this same moment next day and we have the day length - the initial unit of time for all living beings on the planet. In a calendar year this point will draw an analemma - the figure 8 shape with equinox in the center cross and two solstices at the very top and bottom of the lobes. We can count any oscillations with any frequency to get any needed precision of the fraction of the day passed. This is the time it takes for the noon to happen for everyone around the surface of the planet. We shift these points by half the distance and get midnight points. Then simply observe the day fraction, where zero and one are the midnights and half is exactly noon, in any base number system.
 
+  p First we need to know where we are on the planet. The web browser provides the timezone information, so we can estimate the location from the offset minutes we get from it - <code>{{(new Date()).getTimezoneOffset()/60}}</code> hours, which approximates longitude at <code>{{(new Date()).getTimezoneOffset()/4}}&deg;</code>. 
+    span For more precision type in your longitude 
+    input.p-1.bg-orange-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.longitude")
+    span ,&nbsp;latitude 
+    input.p-1.bg-orange-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.latitude")
+    span &nbsp;and altitude 
+    input.p-1.bg-orange-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.altitude")
+    span &nbsp;or just use your device 
+    button.display-inline.px-1.py-1px.bg-orange-400.rounded-lg.shadow-lg(v-if="geoCapable" @click="getLocation()") Location
+    span  to get better estimate of local time. Now let's look at the fraction.
+  
+  ul
+    li <b>Decimal</b>:  <code>{{dayFraction.toFixed(6)}}</code> - this is not particularly meaningful, yet revealing the core pattern - the day fraction gives us more precision with each digit we might. Just the <code>{{dayFraction.toFixed(6)[2]}}</code> <i>'decidays'</i>,  <code>{{dayFraction.toFixed(6).slice(2,4)}}</code><i>'centidays'</i> or <code>{{dayFraction.toFixed(6).slice(2,5)}}</code> <i>'millidays'</i> are not particularly convenient for daily use. Let's look at other options. 
+    li <b>Binary</b>:  <code>{{dayFraction.toString(2).slice(0,20)}}</code> - this is a choice tree. Each digit is a halving - a switch between 'earlier' and 'later' than the middle of a whole unit. This is much more meaningful - we're in half <code>{{dayFraction.toString(2).slice(2,3)}}</code>, quarter  <code>{{dayFraction.toString(2).slice(2,4)}}</code>, quaver  <code>{{dayFraction.toString(2).slice(2,5)}}</code>, etc. This might be convenient, but a bit too verbose to say. We can compress this structure preserving the halving meaning by grouping the binary digits together - we can look at quaternary, octal, hexadecimal representations and find that 8 is the correct scale as clear consequence of 3D space we inhabit not only with bodies, but also our minds that are highly specialized to process spatial data. 
+    li <b>Octal</b>:  <code>{{dayFraction.toString(8).slice(0,8)}}</code> - this is the octree of time, that balances informational density and semantics. Each digit is a 1/8 recursive step - an octave group of 3 binary choices between 'early' and 'late' parts of a whole unit. This quite intuitive too - we're in octant <code>{{dayFraction.toString(8).slice(2,3)}}</code>, session  <code>{{dayFraction.toString(8).slice(3,4)}}</code>, topic  <code>{{dayFraction.toString(8).slice(4,5)}}</code>, etc. Especially if we look at pairs and be aware of 3 main scales - daytime, internal event structure, rhythm and phrasing: session  <code class="octal">{{dayFraction.toString(8).slice(2,4)}}</code>, turn  <code>{{dayFraction.toString(8).slice(4,6)}}</code>, beat  <code>{{dayFraction.toString(8).slice(6,8)}}</code> - it's pure music!
 
   .text-lg So we can say that now it's the  octant <b>{{odf[0]}}</b>,  session <b>{{odf[1]}}</b>,  topic <b>{{odf[2]}}</b>, turn <b>{{odf[3]}}</b>, phrase  <b>{{odf[4]}}</b> and  beat <b>{{odf[5]}}</b>.
+
+  p Why so much preference to the octal count? It's not only the 3D 2^3 grouping and adaptation. It's 8 planets in the Solar system, it's also the Octaeteris - the periodic 5:8:13 Earth-Venus orbital resonance every 8 years along with 99 moon cycles.  
 
 
   p First let's find the first pair of Venus transits in this new epoch: they happened on <b>{{transits[0].peak.date.toLocaleDateString()}}</b> and <b>{{transits[1].peak.date.toLocaleDateString()}}</b> with <b>{{(transits[1].peak.ut-transits[0].peak.ut).toFixed(2)}}</b> days passed between. It's the Venus Octaeteris - the <b>5</b> Venus synodic cycles of <b>{{((transits[1].peak.ut-transits[0].peak.ut)/5).toFixed(4)}}</b> days each. This is the famous 5:8:13 resonance of Earth and Venus. Due to the inclination of the Venus orbit the full alignment of Earth, Venus and Sun in a transit happens quite rarely - next pair will occur in <b>{{((transits[2].peak.ut - transits[1].peak.ut)/yearLength).toFixed(2)}}</b> years on <b>{{transits[2].peak.date.toLocaleDateString()}}</b> and <b>{{transits[3].peak.date.toLocaleDateString()}}</b> with <b>{{(transits[3].peak.ut-transits[2].peak.ut).toFixed(2)}}</b> days between them. We would have to wait another span of  <b>{{((transits[4].peak.ut - transits[3].peak.ut)/yearLength).toFixed(2)}}</b> years to see the closing pair that terminates the full Venus transit cycle on  <b>{{transits[4].peak.date.toLocaleDateString()}}</b> and restarts it again with the new cycle of <b>{{(transits[5].peak.ut-transits[4].peak.ut).toFixed(2)}}</b> days with  <b>{{transits[5].peak.date.toLocaleDateString()}}</b> pair transit. The full transit cycle takes <b>{{((transits[4].peak.ut - transits[0].peak.ut)/yearLength).toFixed(2)}}</b> years or <b>{{((transits[4].peak.ut - transits[0].peak.ut)).toFixed(2)}}</b> days, which is exactly <b>{{((transits[4].peak.ut - transits[0].peak.ut)/2920).toFixed(1)}}</b> octaeterides or <b>{{((transits[4].peak.ut - transits[0].peak.ut)/((transits[1].peak.ut-transits[0].peak.ut)/5)).toFixed(0)}}</b> Venus cycles.
@@ -38,16 +72,12 @@ section.border-1.bg-orange-50.shadow-xl.flex-auto.p-4.gap-2.flex.flex-col.overfl
   p Since then we have <b>{{octaDays.toFixed(2)}}</b> days past - that is more than <b>2920</b>, so we need to count the finished Octaeterides and find the exact number of the day in the current cycle. First let's find the last Summer Solstice - <b>{{recentSolstice.date.toLocaleDateString()}}</b>. Then just subtract the Epoch and we get <b>{{yearsPassed}}</b> complete solar years passed between them - <b>{{octaeteride}}x8 + {{year}}</b> years have passed. Current octaeteris started on <b>{{currentStart.date.toLocaleDateString()}}</b> Summer Solstice local midnight.
 
   p It's <b>{{octaeteride}}</b> octaeterides and <b>{{dayCount}}</b>/2920 days since the Epoch. Today it's the day <b>{{(dayCount-seasonCount*73)}}</b>/73 of pentad <b>{{(seasonCount)}}</b>/40. Thus, we can display current date as <b>{{octaeteride}}-{{dayCount}}</b> or <b>{{octaeteride}}-{{(seasonCount)}}-{{(dayCount-seasonCount*73)}}</b> in decimal. The pentad number can tell us the solar year and the Venus cycle phase - 5 pentads make 1 Solar year, 8 pentads close the Venus cycle. So we've now covered {{(seasonCount)}}/5=<b>{{(seasonCount/5).toFixed(2)}} of 8</b> years of current Octaeteris, which also means we're in {{(seasonCount)}}/8=<b>{{(seasonCount/8).toFixed(2)}} of 5</b> Venus cycles in the same period. 
-  
-  p We have the day address, but what time is it? This is not hard to find. We just need to find our local day fraction - which part of the distance between our past and future local midnights we've already covered - it's <b>{{(dayFraction).toFixed(4)}}</b> or <b>{{(dayFraction*100).toFixed(2)}}%</b> of this day now.
 
-  .text-lg So the time now is <b>{{octaeteride}}-{{seasonCount}}-{{(dayCount-seasonCount*73+dayFraction).toFixed(4)}}</b> in decimal.
+  p We have 8 years in Octaeteris, 5 Venus cycles in each, which include 8 pentads of 73 days. And 73=1+8+64 - it is the octal "angel number" 0o111 - and we have 40 of these in full octaeteris cycle. Base-8 fits the system much better and preserves more valuable insights than decimal. Let's convert the date to octal.
 
-  p Now let's think if decimal is the best choice here. We have 8 years in Octaeteris, 5 Venus cycles in each, which include 8 pentads of 73 days. And 73=1+8+64 - it is the octal "angel number" 0o111 - and we have 40 of these in full octaeteris cycle. Base-8 fits the system much better and preserves more valuable insights than decimal. Let's convert the date to octal.
+  .text-lg So the time now is <b>{{octaeteride.toString(8)}}-{{(dayCount+dayFraction).toString(8).slice(0,9)}}</b> as pure day count of the octaeteris or <b>{{octaeteride.toString(8)}}-{{seasonCount.toString(8)}}-{{(dayCount-seasonCount*73+dayFraction).toString(8).slice(0,7)}}</b> with pentad seasons in octal.
 
-  .text-lg So the time now is <b>{{octaeteride.toString(8)}}-{{(dayCount+dayFraction).toString(8).slice(0,10)}}</b> as pure day count of the octaeteris or <b>{{octaeteride.toString(8)}}-{{seasonCount.toString(8)}}-{{(dayCount-seasonCount*73+dayFraction).toString(8).slice(0,8)}}</b> with pentad seasons in octal.
-
-  p We naturally have 8-day octave "weeks" and the last digit of the pure day count show it instantly (starting with 0 and ending after 7) - today is the day <b>{{dayCount%8}}</b>. The pentad-based date seems to obscure the weekday, but it's quite easy to recover: each pentad shifts the weekdays by 1 (73=8*9+1), so to find the weekday from the pentad format we just need to sum the last two digits of the pentad and the day and see what is the last digit of the result: <b>0o{{seasonCount.toString(8)}}</b> pentad and <b>0o{{(dayCount-seasonCount*73).toString(8)}}</b> day give us <b>0o{{seasonCount.toString(8).slice(-1)}}</b>+<b>0o{{(dayCount-seasonCount*73).toString(8).slice(-1)}}</b> = <b>0o{{(Number(seasonCount.toString(8).slice(-1)) + Number((dayCount-seasonCount*73).toString(8).slice(-1))).toString(8)}}</b> in octal, look at the last digit - it's <b>{{((Number(seasonCount.toString(8).slice(-1))+ Number((dayCount-seasonCount*73).toString(8).slice(-1)))%8)}}</b> day of current octave week. The weeks run continuously for the whole octaeteris, and reset at the 8th Solstice. 
+  p We naturally have 8-day octaves and the last digit of the pure day count show it instantly (starting with 0 and ending after 7) - today is the day <b>{{dayCount%8}}</b>. The pentad-based date seems to obscure the weekday, but it's quite easy to recover: each pentad shifts the weekdays by 1 (73=8*9+1), so to find the weekday from the pentad format we just need to sum the last two digits of the pentad and the day and see what is the last digit of the result: <b>0o{{seasonCount.toString(8)}}</b> pentad and <b>0o{{(dayCount-seasonCount*73).toString(8)}}</b> day give us <b>0o{{seasonCount.toString(8).slice(-1)}}</b>+<b>0o{{(dayCount-seasonCount*73).toString(8).slice(-1)}}</b> = <b>0o{{(Number(seasonCount.toString(8).slice(-1)) + Number((dayCount-seasonCount*73).toString(8).slice(-1))).toString(8)}}</b> in octal, look at the last digit - it's <b>{{((Number(seasonCount.toString(8).slice(-1))+ Number((dayCount-seasonCount*73).toString(8).slice(-1)))%8)}}</b> day of current octave week. The weeks run continuously for the whole octaeteris, and reset at the 8th Solstice. 
 
   p So, in octal, we can say that this is Octaeteris <b>{{octal(octaeteride)}}</b>, year <b>{{octal(year)}}</b>, pentad <b>{{octal(seasonCount)}}</b>, day <b>{{octal(dayCount-seasonCount*73)}}</b>. It's day <b>{{dayCount%8}}</b> of the octave <b>{{octal(Math.floor(dayCount/8))}}</b>.
 
@@ -57,7 +87,8 @@ section.border-1.bg-orange-50.shadow-xl.flex-auto.p-4.gap-2.flex.flex-col.overfl
 
 
 <style scoped>
-code {
-  @apply bg-orange-200 px-1 py-1px rounded-lg
+code,
+input.code {
+  @apply bg-orange-200 px-1 py-1px rounded-lg text-sm
 }
 </style>
