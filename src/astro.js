@@ -91,63 +91,72 @@ export function getLocalEpochUT(eventTime, longitude = estimatedLongitude) {
 export const EPOCH_YEAR = 1760;
 export const EPOCH_SOLSTICE = Seasons(EPOCH_YEAR).jun_solstice;
 const DAYS_PER_OCTAETERIS = 2920;
-const OCTAETERIDES_PER_ERA = 30.4;
-const YEARS_PER_ERA = 243;
+const OCTAETERIS_YEARS = 8;
+const OCTAETERIDES_PER_ERA = 30;
+const YEARS_PER_ERA = 240;
+
+function getOctaeterisBoundary(year, longitude = estimatedLongitude) {
+  const solstice = Seasons(year).jun_solstice;
+  return getLocalEpochUT(solstice, longitude);
+}
 
 export function dateToOctaDate(date, longitude = estimatedLongitude) {
-  const astroTime = new AstroTime(date);
+  const astroTime = date instanceof AstroTime ? date : new AstroTime(date);
+  const targetUT = astroTime.ut;
+  const epochYear = startSolstice.date.getUTCFullYear();
+  const targetYear = astroTime.date.getUTCFullYear();
 
-  // 1. Calculate the absolute epoch UT (1769 Solstice local midnight)
-  const absoluteEpochUT = getLocalEpochUT(EPOCH_SOLSTICE, longitude);
+  let boundaryYear = epochYear + Math.floor((targetYear - epochYear) / OCTAETERIS_YEARS) * OCTAETERIS_YEARS;
+  let boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
 
-  // 2. Calculate total days since the absolute epoch
-  const totalDaysSinceEpoch = astroTime.ut - absoluteEpochUT;
-
-  // 3. Estimate which Octaeteris we're in (using average year length)
-  const avgDaysPerOctaeteris = 2921.9375; // 8 tropical years
-  const approxOctaeteris = Math.floor(totalDaysSinceEpoch / avgDaysPerOctaeteris);
-
-  // 4. Find the exact Solstice that started this Octaeteris
-  const approxYear = EPOCH_YEAR + (approxOctaeteris * 8);
-  let candidateSolstice = Seasons(approxYear).jun_solstice;
-
-  // Adjust if we overshot or undershot (due to leap years and orbital drift)
-  while (candidateSolstice.ut > astroTime.ut) {
-    const prevYear = candidateSolstice.date.getUTCFullYear() - 8;
-    candidateSolstice = Seasons(prevYear).jun_solstice;
+  while (boundaryUT > targetUT) {
+    boundaryYear -= OCTAETERIS_YEARS;
+    boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
   }
 
-  while (true) {
-    const nextYear = candidateSolstice.date.getUTCFullYear() + 8;
-    const nextSolstice = Seasons(nextYear).jun_solstice;
-    if (nextSolstice.ut <= astroTime.ut) {
-      candidateSolstice = nextSolstice;
-    } else {
-      break;
-    }
+  let nextBoundaryYear = boundaryYear + OCTAETERIS_YEARS;
+  let nextBoundaryUT = getOctaeterisBoundary(nextBoundaryYear, longitude);
+  while (nextBoundaryUT <= targetUT) {
+    boundaryYear = nextBoundaryYear;
+    boundaryUT = nextBoundaryUT;
+    nextBoundaryYear += OCTAETERIS_YEARS;
+    nextBoundaryUT = getOctaeterisBoundary(nextBoundaryYear, longitude);
   }
 
-  // 5. Calculate the local epoch for this Octaeteris
-  const currentOctaeterisUT = getLocalEpochUT(candidateSolstice, longitude);
-
-  // 6. Calculate the day within this Octaeteris
-  const daysInCurrentOctaeteris = Math.floor(astroTime.ut - currentOctaeterisUT);
-
-  // 7. Calculate the total Octaeteris number since 1769
-  const totalOctaeterides = Math.floor((currentOctaeterisUT - absoluteEpochUT) / avgDaysPerOctaeteris);
-
-  // 8. Determine Era and Octaeteris within Era
-  const era = Math.floor(totalOctaeterides / OCTAETERIDES_PER_ERA);
-  const octaeteris = totalOctaeterides % OCTAETERIDES_PER_ERA;
-
-  // 9. Handle epagomenal days
-  const isWaiting = daysInCurrentOctaeteris >= DAYS_PER_OCTAETERIS;
+  const elapsedDays = targetUT - boundaryUT;
+  const day = Math.floor(elapsedDays);
+  const fraction = elapsedDays - day;
+  const absoluteOctaeteris = Math.floor((boundaryYear - epochYear) / OCTAETERIS_YEARS);
+  const era = Math.floor(absoluteOctaeteris / OCTAETERIDES_PER_ERA);
+  const octaeteris = absoluteOctaeteris - era * OCTAETERIDES_PER_ERA;
+  const isWaiting = day >= DAYS_PER_OCTAETERIS;
 
   return {
-
     era,
     octaeteris,
-    day: daysInCurrentOctaeteris,
-    isWaiting
+    day,
+    fraction,
+    isWaiting,
+    boundaryYear,
+    boundaryUT,
+    absoluteOctaeteris,
   };
+}
+
+export function octaDateToGregorian(octaDate, longitude = estimatedLongitude) {
+  const {
+    era: eraValue = 0,
+    octaeteris: octaeterisValue = 0,
+    day: dayValue = 0,
+    fraction: fractionValue = 0,
+  } = octaDate ?? {};
+
+  const absoluteOctaeteris = eraValue * OCTAETERIDES_PER_ERA + octaeterisValue;
+  const epochYear = startSolstice.date.getUTCFullYear();
+  const boundaryYear = epochYear + absoluteOctaeteris * OCTAETERIS_YEARS;
+  const boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
+  const normalizedFraction = ((fractionValue % 1) + 1) % 1;
+  const absoluteUT = boundaryUT + dayValue + normalizedFraction;
+
+  return new AstroTime(absoluteUT).date;
 }
