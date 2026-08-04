@@ -24,6 +24,7 @@ for (let t = 1; t < 10; t++) {
 }
 
 export const startYear = firstTransit.peak.date.getUTCFullYear()
+export const transitCycleStartYear = historicalTransits[0].peak.date.getUTCFullYear()
 export const startSolstice = Seasons(startYear).jun_solstice
 export const currentYear = astroTime.date.getUTCFullYear()
 export const recentSolstice = Seasons(currentYear).jun_solstice.ut < astroTime.ut ? Seasons(currentYear).jun_solstice : Seasons(currentYear - 1).jun_solstice
@@ -108,6 +109,15 @@ function normalizeFraction(value) {
   return ((value % 1) + 1) % 1;
 }
 
+function getEraForBoundary(boundaryYear) {
+  const cycleOffset = boundaryYear - transitCycleStartYear;
+  if (cycleOffset <= YEARS_PER_TRANSIT_CYCLE) {
+    return 0;
+  }
+
+  return Math.floor((cycleOffset - 1) / YEARS_PER_TRANSIT_CYCLE);
+}
+
 function resolveOctaeterisBoundary(target, longitude = estimatedLongitude) {
   const targetAstroTime = target instanceof AstroTime ? target : new AstroTime(target);
   const targetUT = targetAstroTime.ut;
@@ -165,8 +175,9 @@ export function dateToOctaDate(date = new Date(), longitude = estimatedLongitude
   const day = Math.floor(elapsedDays);
   const fraction = normalizeFraction(elapsedDays - day);
   const absoluteOctaeteris = Math.floor((boundaryYear - epochYear) / OCTAETERIS_YEARS);
-  const era = Math.floor(absoluteOctaeteris / OCTAETERIDES_PER_TRANSIT_CYCLE);
-  const octaeteris = absoluteOctaeteris - era * OCTAETERIDES_PER_TRANSIT_CYCLE;
+  const era = getEraForBoundary(boundaryYear);
+  const eraStartYear = transitCycleStartYear + era * YEARS_PER_TRANSIT_CYCLE;
+  const octaeteris = Math.floor((boundaryYear - eraStartYear) / OCTAETERIS_YEARS);
   const isWaiting = day >= OCTAETERIS_DAYS;
 
   return {
@@ -199,10 +210,11 @@ export function octaDateToGregorian(octaDate, longitude = estimatedLongitude) {
     octaeteris: octaeterisValue = 0,
     day: dayValue = 0,
     fraction: fractionValue = 0,
+    absoluteOctaeteris: absoluteOctaeterisValue,
   } = octaDate ?? {};
 
-  const absoluteOctaeteris = eraValue * OCTAETERIDES_PER_TRANSIT_CYCLE + octaeterisValue;
   const epochYear = startSolstice.date.getUTCFullYear();
+  const absoluteOctaeteris = absoluteOctaeterisValue ?? eraValue * OCTAETERIDES_PER_TRANSIT_CYCLE + octaeterisValue;
   const boundaryYear = epochYear + absoluteOctaeteris * OCTAETERIS_YEARS;
   const boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
   const normalizedFraction = ((fractionValue % 1) + 1) % 1;

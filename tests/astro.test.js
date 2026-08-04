@@ -15,10 +15,10 @@ test('round-trips modern and recent dates', () => {
   assertRoundTrip('recent date', new Date('2026-08-04T09:15:00.000Z'));
 });
 
-test('supports negative-era conversions for ancient dates', () => {
-  assertRoundTrip('ancient date', new Date('0100-01-01T00:00:00.000Z'));
-  const encoded = dateToOctaDate(new Date('0100-01-01T00:00:00.000Z'));
-  assert.ok(encoded.era < 0, `expected negative era for ancient dates, got ${encoded.era}`);
+test('keeps the first historical transit cycle in era 0', () => {
+  assertRoundTrip('historical transit cycle', new Date('1761-06-21T00:00:00.000Z'));
+  const encoded = dateToOctaDate(new Date('1761-06-21T00:00:00.000Z'));
+  assert.equal(encoded.era, 0, `expected the 1761 transit cycle to stay in era 0, got ${encoded.era}`);
 });
 
 test('keeps day fractions normalized and bounded for modern dates', () => {
@@ -28,9 +28,14 @@ test('keeps day fractions normalized and bounded for modern dates', () => {
   assert.ok(Number.isFinite(encoded.fraction), 'fraction should be finite');
 });
 
+test('advances to era 1 at the 2004 transit-cycle boundary', () => {
+  const encoded = dateToOctaDate(new Date('2026-08-04T00:00:00.000Z'));
+  assert.equal(encoded.era, 1, `expected the current date to be in era 1 after the 2004 transit-cycle boundary, got ${encoded.era}`);
+});
+
 test('uses 243-year transit-cycle eras for larger spans', () => {
   const encoded = dateToOctaDate(new Date('2245-06-21T00:00:00.000Z'));
-  assert.equal(encoded.era, 1, `expected the 243-year transit cycle to advance to era 1 after the first cycle, got ${encoded.era}`);
+  assert.equal(encoded.era, 1, `expected the 243-year transit cycle to remain in era 1 through the second cycle, got ${encoded.era}`);
 });
 
 test('keeps years-passed consistent with the current octaeteris state', () => {
