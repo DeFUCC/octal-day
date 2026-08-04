@@ -24,18 +24,12 @@ export const currentYear = astroTime.date.getUTCFullYear()
 export const recentSolstice = Seasons(currentYear).jun_solstice.ut < astroTime.ut ? Seasons(currentYear).jun_solstice : Seasons(currentYear - 1).jun_solstice
 export const yearLength = Seasons(currentYear).jun_solstice.ut - Seasons(currentYear - 1).jun_solstice.ut
 export const yearsPassed = Math.round((recentSolstice.ut - startSolstice.ut) / yearLength)
-export const octaeteride = Math.floor(yearsPassed / 8)
-export const year = yearsPassed - octaeteride * 8
 export const startOffset = getOfflineSolarFraction(startSolstice)
-export const currentStart = Seasons(startYear + octaeteride * 8).jun_solstice
-export const dayCount = Math.floor(astroTime.ut - currentStart.ut - startOffset)
-export const octaveCount = Math.floor(dayCount / 8)
-export const seasonCount = Math.floor(dayCount / 73)
 export const startMoon = NextMoonQuarter(SearchMoonQuarter(firstTransit.peak))
 export const nextMoon = NextMoonQuarter(SearchMoonQuarter(transits[1].peak))
 export const moonCycle = (nextMoon.time.ut - startMoon.time.ut) / 99
 
-export const CALENDAR_EPOCH_UT = startSolstice.ut - startOffset;
+export const CALENDAR_EPOCH_UT = getLocalEpochUT(startSolstice);
 export const CALENDAR_EPOCH = new AstroTime(CALENDAR_EPOCH_UT);
 
 
@@ -100,7 +94,24 @@ function getOctaeterisBoundary(year, longitude = estimatedLongitude) {
   return getLocalEpochUT(solstice, longitude);
 }
 
-export function dateToOctaDate(date, longitude = estimatedLongitude) {
+export function getOctaeterisState(date = new Date(), longitude = estimatedLongitude) {
+  const astroTimeValue = date instanceof AstroTime ? date : new AstroTime(date);
+  const encoded = dateToOctaDate(astroTimeValue, longitude);
+  const currentStart = new AstroTime(encoded.boundaryUT);
+  const dayCount = Math.floor(astroTimeValue.ut - encoded.boundaryUT);
+  const year = astroTimeValue.date.getUTCFullYear() - currentStart.date.getUTCFullYear();
+
+  return {
+    ...encoded,
+    currentStart,
+    currentBoundaryUT: encoded.boundaryUT,
+    dayCount,
+    octaeteride: encoded.absoluteOctaeteris,
+    year,
+  };
+}
+
+export function dateToOctaDate(date = new Date(), longitude = estimatedLongitude) {
   const astroTime = date instanceof AstroTime ? date : new AstroTime(date);
   const targetUT = astroTime.ut;
   const epochYear = startSolstice.date.getUTCFullYear();
@@ -142,6 +153,15 @@ export function dateToOctaDate(date, longitude = estimatedLongitude) {
     absoluteOctaeteris,
   };
 }
+
+const currentState = getOctaeterisState(astroTime);
+export const currentStart = currentState.currentStart;
+export const currentBoundaryUT = currentState.currentBoundaryUT;
+export const octaeteride = currentState.octaeteride;
+export const year = currentState.year;
+export const dayCount = currentState.dayCount;
+export const octaveCount = Math.floor(dayCount / 8);
+export const seasonCount = Math.floor(dayCount / 73);
 
 export function octaDateToGregorian(octaDate, longitude = estimatedLongitude) {
   const {

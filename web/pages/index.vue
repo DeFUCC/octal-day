@@ -1,6 +1,6 @@
 <script setup>
 import DayLine from './line.vue'
-import { transits, octaeteride, seasonCount, dayCount } from '../../src/astro.js'
+import { transits, octaeteride, seasonCount, dayCount, dateToOctaDate } from '../../src/astro.js'
 import { computed } from 'vue'
 import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, colors, coord, arrows, trigrams, octime, } from '../../src/useDay.js';
 
@@ -11,9 +11,9 @@ import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, col
 <template lang="pug">
 section.bg-yellow-50.flex.flex-col.gap-2.p-2.overflow-y-scroll
   .flex.gap-2.justify-between
-    .font-mono {{octaeteride.toString(8)}}-{{seasonCount.toString(8)}}-{{(dayCount-seasonCount*73).toString(8)}}
+    .font-mono {{octaeteride.toString(8)}}-{{Math.floor(dateToOctaDate().day/73).toString(8)}}-{{(dateToOctaDate().day-Math.floor(dateToOctaDate().day/73)*73).toString(8)}}
     .flex-1
-    .font-bold {{dayCount%8}} 
+    .font-bold {{dateToOctaDate().day%8}} 
     .flex-1
     .font-mono {{octime}}
   .flex.flex-col.gap-2.justify-around.shadow-lg.rounded-lg(v-for="(level,l) in levels" :key="level" )
