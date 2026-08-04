@@ -4,6 +4,11 @@ export const offsetMinutes = (new Date()).getTimezoneOffset()
 export const offsetHours = -offsetMinutes / 60;
 export const estimatedLongitude = offsetHours * 15;
 
+export const OCTAETERIS_DAYS = 2920;
+export const OCTAETERIS_YEARS = 8;
+export const YEARS_PER_TRANSIT_CYCLE = 243;
+export const OCTAETERIDES_PER_TRANSIT_CYCLE = Math.floor(YEARS_PER_TRANSIT_CYCLE / OCTAETERIS_YEARS);
+
 export const astroTime = new AstroTime(new Date())
 export const jd0Astro = new AstroTime(0);
 export const firstTransit = SearchTransit(Body.Venus, jd0Astro);
@@ -83,14 +88,52 @@ export function getLocalEpochUT(eventTime, longitude = estimatedLongitude) {
 
 export const EPOCH_YEAR = 1760;
 export const EPOCH_SOLSTICE = Seasons(EPOCH_YEAR).jun_solstice;
-const DAYS_PER_OCTAETERIS = 2920;
-const OCTAETERIS_YEARS = 8;
-const YEARS_PER_TRANSIT_CYCLE = 243;
-const OCTAETERIDES_PER_TRANSIT_CYCLE = Math.floor(YEARS_PER_TRANSIT_CYCLE / OCTAETERIS_YEARS);
+
+const seasonCache = new Map();
+
+function getSeasonInfo(year) {
+  if (!seasonCache.has(year)) {
+    seasonCache.set(year, Seasons(year));
+  }
+
+  return seasonCache.get(year);
+}
 
 function getOctaeterisBoundary(year, longitude = estimatedLongitude) {
-  const solstice = Seasons(year).jun_solstice;
+  const solstice = getSeasonInfo(year).jun_solstice;
   return getLocalEpochUT(solstice, longitude);
+}
+
+function normalizeFraction(value) {
+  return ((value % 1) + 1) % 1;
+}
+
+function resolveOctaeterisBoundary(target, longitude = estimatedLongitude) {
+  const targetAstroTime = target instanceof AstroTime ? target : new AstroTime(target);
+  const targetUT = targetAstroTime.ut;
+  const targetYear = targetAstroTime.date.getUTCFullYear();
+  const epochYear = startSolstice.date.getUTCFullYear();
+
+  let boundaryYear = epochYear + Math.floor((targetYear - epochYear) / OCTAETERIS_YEARS) * OCTAETERIS_YEARS;
+  let boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
+
+  while (boundaryUT > targetUT) {
+    boundaryYear -= OCTAETERIS_YEARS;
+    boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
+  }
+
+  while (true) {
+    const nextBoundaryYear = boundaryYear + OCTAETERIS_YEARS;
+    const nextBoundaryUT = getOctaeterisBoundary(nextBoundaryYear, longitude);
+
+    if (nextBoundaryUT <= targetUT) {
+      boundaryYear = nextBoundaryYear;
+      boundaryUT = nextBoundaryUT;
+      continue;
+    }
+
+    return { boundaryYear, boundaryUT };
+  }
 }
 
 export function getOctaeterisState(date = new Date(), longitude = estimatedLongitude) {
@@ -116,32 +159,15 @@ export function dateToOctaDate(date = new Date(), longitude = estimatedLongitude
   const astroTime = date instanceof AstroTime ? date : new AstroTime(date);
   const targetUT = astroTime.ut;
   const epochYear = startSolstice.date.getUTCFullYear();
-  const targetYear = astroTime.date.getUTCFullYear();
-
-  let boundaryYear = epochYear + Math.floor((targetYear - epochYear) / OCTAETERIS_YEARS) * OCTAETERIS_YEARS;
-  let boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
-
-  while (boundaryUT > targetUT) {
-    boundaryYear -= OCTAETERIS_YEARS;
-    boundaryUT = getOctaeterisBoundary(boundaryYear, longitude);
-  }
-
-  let nextBoundaryYear = boundaryYear + OCTAETERIS_YEARS;
-  let nextBoundaryUT = getOctaeterisBoundary(nextBoundaryYear, longitude);
-  while (nextBoundaryUT <= targetUT) {
-    boundaryYear = nextBoundaryYear;
-    boundaryUT = nextBoundaryUT;
-    nextBoundaryYear += OCTAETERIS_YEARS;
-    nextBoundaryUT = getOctaeterisBoundary(nextBoundaryYear, longitude);
-  }
+  const { boundaryYear, boundaryUT } = resolveOctaeterisBoundary(astroTime, longitude);
 
   const elapsedDays = targetUT - boundaryUT;
   const day = Math.floor(elapsedDays);
-  const fraction = elapsedDays - day;
+  const fraction = normalizeFraction(elapsedDays - day);
   const absoluteOctaeteris = Math.floor((boundaryYear - epochYear) / OCTAETERIS_YEARS);
   const era = Math.floor(absoluteOctaeteris / OCTAETERIDES_PER_TRANSIT_CYCLE);
   const octaeteris = absoluteOctaeteris - era * OCTAETERIDES_PER_TRANSIT_CYCLE;
-  const isWaiting = day >= DAYS_PER_OCTAETERIS;
+  const isWaiting = day >= OCTAETERIS_DAYS;
 
   return {
     era,
