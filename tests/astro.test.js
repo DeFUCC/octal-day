@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 
-import { dateToOctaDate, octaDateToGregorian } from '../src/astro.js';
+import { dateToOctaDate, octaDateToGregorian, yearsPassed as exportedYearsPassed, octaeteride as exportedOctaeteride, year as exportedYear } from '../src/astro.js';
 
 function assertRoundTrip(label, inputDate) {
   const encoded = dateToOctaDate(inputDate);
@@ -24,4 +24,8 @@ test('supports negative-era conversions for ancient dates', () => {
 test('uses 243-year transit-cycle eras for larger spans', () => {
   const encoded = dateToOctaDate(new Date('2245-06-21T00:00:00.000Z'));
   assert.equal(encoded.era, 1, `expected the 243-year transit cycle to advance to era 1 after the first cycle, got ${encoded.era}`);
+});
+
+test('keeps years-passed consistent with the current octaeteris state', () => {
+  assert.equal(exportedYearsPassed, exportedOctaeteride * 8 + exportedYear, 'yearsPassed should match octaeteride × 8 + year');
 });

@@ -23,7 +23,6 @@ export const startSolstice = Seasons(startYear).jun_solstice
 export const currentYear = astroTime.date.getUTCFullYear()
 export const recentSolstice = Seasons(currentYear).jun_solstice.ut < astroTime.ut ? Seasons(currentYear).jun_solstice : Seasons(currentYear - 1).jun_solstice
 export const yearLength = Seasons(currentYear).jun_solstice.ut - Seasons(currentYear - 1).jun_solstice.ut
-export const yearsPassed = Math.round((recentSolstice.ut - startSolstice.ut) / yearLength)
 export const startOffset = getOfflineSolarFraction(startSolstice)
 export const startMoon = NextMoonQuarter(SearchMoonQuarter(firstTransit.peak))
 export const nextMoon = NextMoonQuarter(SearchMoonQuarter(transits[1].peak))
@@ -99,7 +98,8 @@ export function getOctaeterisState(date = new Date(), longitude = estimatedLongi
   const encoded = dateToOctaDate(astroTimeValue, longitude);
   const currentStart = new AstroTime(encoded.boundaryUT);
   const dayCount = Math.floor(astroTimeValue.ut - encoded.boundaryUT);
-  const year = astroTimeValue.date.getUTCFullYear() - currentStart.date.getUTCFullYear();
+  const year = Math.floor(dayCount / 365);
+  const yearsPassed = encoded.absoluteOctaeteris * OCTAETERIS_YEARS + year;
 
   return {
     ...encoded,
@@ -108,6 +108,7 @@ export function getOctaeterisState(date = new Date(), longitude = estimatedLongi
     dayCount,
     octaeteride: encoded.absoluteOctaeteris,
     year,
+    yearsPassed,
   };
 }
 
@@ -157,8 +158,11 @@ export function dateToOctaDate(date = new Date(), longitude = estimatedLongitude
 const currentState = getOctaeterisState(astroTime);
 export const currentStart = currentState.currentStart;
 export const currentBoundaryUT = currentState.currentBoundaryUT;
+export const era = currentState.era;
+export const octaeteris = currentState.octaeteris;
 export const octaeteride = currentState.octaeteride;
 export const year = currentState.year;
+export const yearsPassed = currentState.yearsPassed;
 export const dayCount = currentState.dayCount;
 export const octaveCount = Math.floor(dayCount / 8);
 export const seasonCount = Math.floor(dayCount / 73);
