@@ -48,9 +48,11 @@ import {
   getOctaeterisState, 
   dateToOctaDate, 
   octaDateToDate,
-  // Full re-export of astronomy-engine for advanced JD calculations
-  AstroTime, Seasons, Body, HourAngle, Observer 
+  astronomy
 } from 'octal-day';
+
+  // Full re-export of astronomy-engine for advanced JD calculations
+const {AstroTime, Seasons, Body, HourAngle, Observer } = astronomy
 
 // 1. Get the full hierarchical state for a specific moment and longitude
 const state = getOctaeterisState(new Date(), -75); // Longitude for EST

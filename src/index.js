@@ -1,2 +1,2 @@
 export * from './astro.js'
-export * from 'astronomy-engine'
+export * as astronomy from 'astronomy-engine'
