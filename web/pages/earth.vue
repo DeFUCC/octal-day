@@ -9,9 +9,10 @@ import { transits } from '../../src/astro.js'
 import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, coord, arrows, trigrams } from '../../src/useDay.js'
 
 // Map imports
-import globeImage from '../../maps/2k_earth_daymap.jpg?base64'
+import globeImage from '../../maps/earth-blue-marble.jpg?base64'
 import nightImage from '../../maps/2k_earth_nightmap.jpg?base64'
 import nightSky from '../../maps/night-sky.png?base64'
+// import bumpMap from '../../maps/earth-topology.png?base64'
 
 const globeViz = ref(null)
 let globe = null
@@ -104,6 +105,7 @@ onMounted(async () => {
   // 3. Initialize Globe
   globe = new Globe(globeViz.value)
     .globeMaterial(dayNightMaterial)
+    // .bumpImageUrl(bumpMap)
     .backgroundImageUrl(nightSky)
     .atmosphereColor('#3a228a')
     .atmosphereAltitude(0.1)
