@@ -1,4 +1,4 @@
-# `octal-time` v0.4.0
+# `octal-time`
 
 A self-contained, observer-based time system grounded in the octal number system, Solar system cycle observation, and personal-level recording. 
 
