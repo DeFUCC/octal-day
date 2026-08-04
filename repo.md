@@ -1,4 +1,4 @@
-# Octal Time Research and Design
+# Octal Day Research and Design
 
 This repository explores a modern, astronomy-based calendar system named the Octaeteris Calendar. It is grounded in direct observation of the sky rather than inherited numerological conventions such as 7, 10, 24, or 60. The system uses the Earth–Sun orbit as its primary foundation, reads the Venus conjunction/transit frame as a long-range observational structure, and uses the Moon’s phase as an additional layer of temporal quality.
 

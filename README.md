@@ -1,4 +1,4 @@
-# `octal-time`
+# `octal-day`
 
 A self-contained, observer-based time system grounded in the octal number system, Solar system cycle observation, and personal-level recording. 
 
@@ -50,7 +50,7 @@ import {
   octaDateToDate,
   // Full re-export of astronomy-engine for advanced JD calculations
   AstroTime, Seasons, Body, HourAngle, Observer 
-} from 'octal-time';
+} from 'octal-day';
 
 // 1. Get the full hierarchical state for a specific moment and longitude
 const state = getOctaeterisState(new Date(), -75); // Longitude for EST
