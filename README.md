@@ -24,7 +24,7 @@ The system expresses time through a recursive, base-8 (octal) subdivision, creat
 | **Phrase** | ~2.6 sec | `0o0.00001` | 1/8th of a turn. |
 | **Beat** | ~0.3 sec | `0o0.000001` | 1/8th of a phrase. |
 
-A complete temporal address looks like: `Era-Octaeteris-Season.Day.OctantSessionTopic...` (e.g., `1-5-36.4147`).
+A complete temporal address looks like: `Era-Octaeteris-Season-Day.OctantSessionTopic...` (e.g., `1-2-36-4147.5231`).
 
 ---
 
