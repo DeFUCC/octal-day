@@ -1,13 +1,33 @@
 import { useNow, useStorage } from '@vueuse/core'
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, watch } from 'vue'
 import { getMoonPhase, getOfflineSolarFraction, transits, CALENDAR_EPOCH, estimatedLongitude } from './astro.js'
 import { AstroTime } from 'astronomy-engine'
 
-const coord = useStorage('coords', {
-  longitude: estimatedLongitude,
+const coordStorage = useStorage('coords', {
+  longitude: 98.347734167,
   latitude: 0,
   altitude: 0
 })
+
+const coord = reactive({
+  longitude: coordStorage.value.longitude ?? 98.347734167,
+  latitude: coordStorage.value.latitude ?? 0,
+  altitude: coordStorage.value.altitude ?? 0,
+})
+
+watch(coordStorage, (value) => {
+  coord.longitude = value?.longitude ?? 98.347734167
+  coord.latitude = value?.latitude ?? 0
+  coord.altitude = value?.altitude ?? 0
+}, { deep: true })
+
+watch(coord, (value) => {
+  coordStorage.value = {
+    longitude: value.longitude,
+    latitude: value.latitude,
+    altitude: value.altitude,
+  }
+}, { deep: true })
 
 const now = useNow()
 const astro = computed(() => new AstroTime(now.value))

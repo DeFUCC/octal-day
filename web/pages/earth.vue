@@ -26,32 +26,25 @@ let sunDirectionUniform = null
  */
 const getSunDirectionVector = (dt) => {
   const astroTime = new AstroTime(new Date(dt))
-  const dummyObserver = new Observer(0, 0, 0)
+  const observer = new Observer(0, coord.longitude, 0)
 
-  // 1. Get Sun's geocentric equatorial coordinates
-  const eq = Equator(Body.Sun, astroTime, dummyObserver, true, false)
+  // 1. Get the Sun's apparent equatorial coordinates
+  const eq = Equator(Body.Sun, astroTime, observer, true, false)
   const lat = eq.dec
 
-  // 2. Get Greenwich Apparent Sidereal Time (GAST)
+  // 2. Convert Greenwich sidereal time to the observer's local sidereal time
   const gast = SiderealTime(astroTime)
+  const localSiderealTime = gast + coord.longitude / 15
 
-  // 3. Calculate sub-solar longitude
-  let lon = (eq.ra - gast) * 15
+  // 3. Derive the sub-solar longitude for the selected longitude
+  const lon = (eq.ra - localSiderealTime) * 15
 
-  // ==========================================
-  // THE FIX: Correct for globe.gl / Three.js 180° texture offset
-  // ==========================================
-  lon += 180
-  if (lon > 180) lon -= 360
-  if (lon <= -180) lon += 360
-  // ==========================================
-
-  // 4. Convert Lat/Lon to a 3D Vector in the Globe's Local Space
+  // 4. Convert latitude/longitude to a 3D direction vector in the globe's local space
   const latRad = lat * (Math.PI / 180)
   const lonRad = lon * (Math.PI / 180)
 
   const x = Math.cos(latRad) * Math.sin(lonRad)
-  const y = Math.sin(latRad)
+  const y = -Math.sin(latRad)
   const z = Math.cos(latRad) * Math.cos(lonRad)
 
   return new THREE.Vector3(x, y, z)
@@ -93,8 +86,9 @@ onMounted(async () => {
         vec4 dayColor = texture2D(dayTexture, vUv);
         vec4 nightColor = texture2D(nightTexture, vUv);
         
-        // Both vNormal and sunDirection are now in the exact same Local Space!
-        float intensity = dot(vNormal, normalize(sunDirection));
+        // The globe uses outward-facing normals, so the illumination term must be
+        // flipped to match the sun direction vector derived from the selected longitude.
+        float intensity = -dot(vNormal, normalize(sunDirection));
         
         // smoothstep creates a soft twilight terminator line
         float blendFactor = smoothstep(-0.1, 0.2, intensity);
@@ -146,9 +140,9 @@ async function getLocation() {
     position = await new Promise((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
     });
-    coord.value.longitude = position.coords.longitude
-    coord.value.latitude = position.coords.latitude
-    coord.value.altitude = position.coords.altitude || 0
+    coord.longitude = position.coords.longitude
+    coord.latitude = position.coords.latitude
+    coord.altitude = position.coords.altitude || 0
   } catch (e) { console.log(e) }
 
 }

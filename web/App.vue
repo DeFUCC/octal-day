@@ -11,6 +11,7 @@ main.h-100svh.flex.flex-col.items-center
         RouterLink(to="/day") Day
         RouterLink(to="/table") Table
         RouterLink(to="/octave") Octave
+        RouterLink(to="/earth") Earth
         RouterLink(to="/moon") Moon
         RouterLink(to="/venus") Venus
   
