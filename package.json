@@ -15,8 +15,7 @@
   ],
   "scripts": {
     "dev": "vite --host",
-    "build": "vite build",
-    "build-lib": "vite build --config vite.config.lib.js",
+    "build": "vite build && vite build --config vite.config.lib.js",
     "preview": "vite preview",
     "test": "node tests/astro.test.js"
   },
