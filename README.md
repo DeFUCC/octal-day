@@ -1,37 +1,91 @@
-# Octal Time Research and Design
+# `octal-time` v0.4.0
 
-This repository explores a modern, astronomy-based calendar system named the Octaeteris Calendar. It is grounded in direct observation of the sky rather than inherited numerological conventions such as 7, 10, 24, or 60. The system uses the Earth–Sun orbit as its primary foundation, reads the Venus conjunction/transit frame as a long-range observational structure, and uses the Moon’s phase as an additional layer of temporal quality.
+A self-contained, observer-based time system grounded in the octal number system, Solar system cycle observation, and personal-level recording. 
 
-The implementation in this repo turns those observations into a working prototype. It computes the local solar fraction of the day from the Sun’s hour angle at a chosen longitude, anchors the larger cycle to the local-midnight boundary immediately before a solstice, and expresses the current moment in an octal notation that can be read as a compact temporal address.
+This package provides a parallel framework for tracking time through direct astronomical observation rather than inherited numerical conventions. It is designed to coexist peacefully with any existing civil time standard, serving as a complementary lens for those who wish to align their personal rhythms with the observable sky.
 
-## What the project contains
+---
 
-- A browser-based prototype for exploring the calendar visually
-- A derivation view that explains the logic of the system
-- An Earth globe view that renders daylight and night based on the Sun’s apparent position
-- A calendar table that displays the octal structure over time
-- A paper draft that describes the scientific and conceptual foundations of the system
+## 🌌 The Scaling Hierarchy
 
-## Core idea
+The system expresses time through a recursive, base-8 (octal) subdivision, creating a compact and memorable temporal address. 
 
-The Octaeteris Calendar is a map of time built from direct observation of the sky. Its primary references are:
+| Level | Duration | Octal Representation | Description |
+| :--- | :--- | :--- | :--- |
+| **Era** | 243 years | `0o...` | The full Venus transit cycle. |
+| **Octaeteris** | 8 years | `0o...` | The 8-solstice counting frame. |
+| **Season** | 73 days | `0o111` | 1/40th of an Octaeteris. |
+| **Octave** | 8 days | `0o10` | The continuous, unbroken weekly rhythm. |
+| **Day** | 1 day | `0o1` | One local solar day. |
+| **Octant** | 3 hours | `0o0.1` | 1/8th of a local solar day. |
+| **Session** | 22.5 min | `0o0.01` | 1/8th of an octant. |
+| **Topic** | ~2.8 min | `0o0.001` | 1/8th of a session. |
+| **Turn** | ~21 sec | `0o0.0001` | 1/8th of a topic. |
+| **Phrase** | ~2.6 sec | `0o0.00001` | 1/8th of a turn. |
+| **Beat** | ~0.3 sec | `0o0.000001` | 1/8th of a phrase. |
 
-- the Earth–Sun orbit and the local solar day
-- the solstice as the seasonal anchor
-- the Venus conjunction/transit frame as a longer-range observational structure
-- the Moon’s phase as a current-quality marker
+A complete temporal address looks like: `Era-Octaeteris-Season.Day.OctantSessionTopic...` (e.g., `1-5-36.4147`).
 
-The system uses octal notation as a compact and elegant way to represent the sub-day rhythm, but its authority comes from astronomical observation rather than from inherited calendrical traditions.
+---
 
-## Local epoch definition
+## 📍 The Epoch & Resonance Drift
 
-> The local epoch is the exact Universal Time (UT) of the local solar midnight immediately preceding the astronomical moment of the relevant solstice boundary, defined in relation to the observer’s longitude.
+### The Epoch
+The calendar is anchored to the **local solar midnight immediately preceding the Summer Solstice of 1769**. This date follows the first historically recorded pair of Venus transits (1761–1769), marking the dawn of global, collaborative astronomical observation. 
 
-## References
+### Resonance Drift
+The system embraces the natural mechanics of the cosmos. Only the Solar backbone is strictly corrected; the rest are observed as beautiful, drifting harmonies:
+- **Solar Orbit (The Backbone):** The system observes the actual Summer Solstice and resets the boundary at the preceding local midnight. This prevents any seasonal drift.
+- **Venus Cycle:** 5 synodic cycles equal ~2919.6 days. This drifts by ~0.4 days relative to the 2920-day mathematical anchor per Octaeteris, accumulating to a full nodal shift over the 243-year Era.
+- **Lunar Cycle:** 99 synodic months equal ~2923.5 days. This drifts ~1.6 days longer than the 8-year solar frame. Consequently, the lunar phase beautifully *flips* with each 73-day season, shifting by just 1–2 days over two seasons.
 
-- https://eclipse.gsfc.nasa.gov/OH/transit12.html
-- https://eclipse.gsfc.nasa.gov/transit/catalog/VenusCatalog.html
-- https://en.wikipedia.org/wiki/Transit_of_Venus
-- https://en.wikipedia.org/wiki/Octal
-- https://github.com/cosinekitty/astronomy/
-- https://en.wikipedia.org/wiki/Equation_of_time
+---
+
+## ⚙️ API Reference
+
+```javascript
+import { 
+  getOctaeterisState, 
+  dateToOctaDate, 
+  octaDateToDate,
+  // Full re-export of astronomy-engine for advanced JD calculations
+  AstroTime, Seasons, Body, HourAngle, Observer 
+} from 'octal-time';
+
+// 1. Get the full hierarchical state for a specific moment and longitude
+const state = getOctaeterisState(new Date(), -75); // Longitude for EST
+console.log(state.era);          // e.g., 1
+console.log(state.octaeteris);   // e.g., 5
+console.log(state.day);          // e.g., 2237
+console.log(state.fraction);     // e.g., 0.5252 (local solar fraction)
+console.log(state.isWaiting);    // true if in the epagomenal days post-2920
+
+// 2. Convert a standard Date to the octal structure
+const octaDate = dateToOctaDate(new Date(), -75);
+
+// 3. Convert an octal structure back to a standard JavaScript Date
+const originalDate = octaDateToDate(octaDate, -75);
+```
+
+*Note: All core exports from `astronomy-engine` are re-exported, allowing you to perform complex Julian Day (JD) calculations, find exact planetary conjunctions, and build advanced ephemerides directly alongside the octal logic.*
+
+---
+
+## 🛠️ Use Cases
+
+- **Personal Timekeeping:** Tracking ecological changes, gardening, and personal rhythms aligned with the true solar day and lunar phases.
+- **Astronomical Logging:** A native, base-8 framework for recording observations, transit events, and orbital mechanics.
+- **Hardware Projects:** Powering offline-first, e-ink desk clocks or Raspberry Pi displays that show local solar time without relying on network time protocols.
+- **Symbolic Exploration:** Mapping octal digits to combinatorial systems (like I Ching trigrams/hexagrams) to create mnemonic, multi-modal temporal addresses.
+
+---
+
+## 📜 License & Philosophy
+
+**Copyright © 2026 davay42. All rights reserved.**
+
+This software is a copyrighted authored material, published as a free-will practice of the author. You are warmly invited to observe, study, copy, and use this code for your **personal and non-commercial projects** without any fear of retaliation or legal friction. 
+
+This package is offered as a gift to the community of observers, makers, and dreamers. For institutional or commercial redistribution, please reach out to the author to discuss terms. 
+
+*Look up. The territory is still there.*

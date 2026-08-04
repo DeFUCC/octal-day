@@ -1,37 +1,43 @@
 {
   "name": "octal-time",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "engines": {
     "node": "^24.x"
   },
-  "packageManager": "pnpm@11.15.0",
+  "packageManager": "pnpm@11.19.0",
   "type": "module",
+  "main": "./dist/index.js",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "files": [
+    "dist/index.js"
+  ],
   "scripts": {
     "dev": "vite --host",
     "build": "vite build",
+    "build-lib": "vite build --config vite.config.lib.js",
     "preview": "vite preview",
     "test": "node tests/astro.test.js"
   },
   "dependencies": {
     "@js-temporal/polyfill": "^0.5.1",
     "@unocss/reset": "^66.7.5",
-    "@vueuse/core": "^14.3.0",
-    "@vueuse/gesture": "^2.0.0",
-    "@vueuse/math": "^14.3.0",
+    "@vueuse/core": "^14.4.0",
     "astronomy-engine": "^2.1.19",
     "globe.gl": "^2.46.1",
-    "mdld-parse": "^1.0.4",
     "three": "^0.185.1",
-    "vue": "^3.6.0-beta.12",
+    "vue": "^3.6.0-rc.2",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
     "@unocss/extractor-pug": "^66.7.5",
     "@vitejs/plugin-vue": "^6.0.8",
-    "@vue/language-plugin-pug": "^3.3.7",
+    "@vue/language-plugin-pug": "^3.3.9",
+    "mdld-parse": "^1.0.4",
     "pug": "^3.0.4",
     "unocss": "^66.7.5",
-    "vite": "^8.1.5",
+    "vite": "^8.2.0",
     "vite-plugin-singlefile": "^2.3.3"
   }
 }

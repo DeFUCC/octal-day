@@ -4,19 +4,19 @@ import { getMoonPhase, getOfflineSolarFraction, transits, CALENDAR_EPOCH, estima
 import { AstroTime } from 'astronomy-engine'
 
 const coordStorage = useStorage('coords', {
-  longitude: 98.347734167,
+  longitude: 100,
   latitude: 0,
   altitude: 0
 })
 
 const coord = reactive({
-  longitude: coordStorage.value.longitude ?? 98.347734167,
+  longitude: coordStorage.value.longitude ?? 100,
   latitude: coordStorage.value.latitude ?? 0,
   altitude: coordStorage.value.altitude ?? 0,
 })
 
 watch(coordStorage, (value) => {
-  coord.longitude = value?.longitude ?? 98.347734167
+  coord.longitude = value?.longitude ?? 100
   coord.latitude = value?.latitude ?? 0
   coord.altitude = value?.altitude ?? 0
 }, { deep: true })
