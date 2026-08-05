@@ -51,6 +51,8 @@ const getSunDirectionVector = (dt) => {
   return new THREE.Vector3(x, y, z)
 }
 
+
+
 onMounted(async () => {
   // 1. Load Textures
   const textureLoader = new THREE.TextureLoader()
@@ -102,15 +104,68 @@ onMounted(async () => {
 
   sunDirectionUniform = dayNightMaterial.uniforms.sunDirection
 
+  function generateGridPaths() {
+    const paths = [];
+    const LNG_DIVS = 64;   // Longitude: 64 divisions (0..64 lines)
+    const LAT_DIVS = 32;   // Latitude: 32 divisions (0..32 lines)
+    const STEP_LNG = 360 / LNG_DIVS;  // 5.625°
+    const STEP_LAT = 180 / LAT_DIVS;  // 5.625° — same angular step!
+
+    // ========== MERIDIANS (Longitude lines) ==========
+    for (let i = 0; i <= LNG_DIVS; i++) {
+      const lng = -180 + (i * STEP_LNG);
+      const points = [];
+      for (let lat = -90; lat <= 90; lat += 1) points.push([lat, lng]);
+
+      // Highlight Prime Meridian (0°) and Date Line (±180°)
+      const isPrimeMeridian = i === 32;      // 0o40
+      const isDateLine = i === 0 || i === 64; // ±180°
+
+      paths.push({
+        points,
+        color: isPrimeMeridian ? 'rgba(255, 200, 50, 0.9)' :
+          isDateLine ? 'rgba(255, 100, 100, 0.6)' :
+            'rgba(255, 255, 255, 0.78)',
+        stroke: isPrimeMeridian ? 1.2 :
+          isDateLine ? 0.8 :
+            0.15
+      });
+    }
+
+    // ========== PARALLELS (Latitude lines) ==========
+    for (let j = 0; j <= LAT_DIVS; j++) {
+      const lat = -90 + (j * STEP_LAT);
+      const points = [];
+      for (let lng = -180; lng <= 180; lng += 2) points.push([lat, lng]);
+
+      // Highlight Equator (0°)
+      const isEquator = j === 16;  // halfway: 32/2 = 16
+
+      paths.push({
+        points,
+        color: isEquator ? 'rgba(255, 200, 50, 0.9)' :
+          'rgba(255, 255, 255, 0.88)',
+        stroke: isEquator ? 1.2 : 0.15
+      });
+    }
+
+    return paths;
+  }
+
   // 3. Initialize Globe
   globe = new Globe(globeViz.value)
     .globeMaterial(dayNightMaterial)
-    // .bumpImageUrl(bumpMap)
+    .pathsData(generateGridPaths())
+    .pathPoints('points')
+    .pathPointLat(p => p[0])
+    .pathPointLng(p => p[1])
+    .pathColor('color')
+    .pathStroke('stroke')
     .backgroundImageUrl(nightSky)
     .atmosphereColor('#3a228a')
     .atmosphereAltitude(0.1)
     .pointAltitude('size')
-    .pointColor('color')
+    .pointColor('color');
 
   // 4. Animation Loop
   const animate = () => {

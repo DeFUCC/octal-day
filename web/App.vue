@@ -10,6 +10,7 @@ main.h-100svh.flex.flex-col.items-center
         RouterLink(to="/derivation") Derivation
         RouterLink(to="/day") Day
         RouterLink(to="/table") Table
+        RouterLink(to="/time") Moon
         RouterLink(to="/octave") Octave
         RouterLink(to="/earth") Earth
         RouterLink(to="/moon") Moon
