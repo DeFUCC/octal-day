@@ -1,24 +1,56 @@
 <script setup>
-import { transits, octaeteride, year, currentStart, dayCount, octaveCount, seasonCount } from '../../src/astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, arrows } from '../../src/useDay.js';
+import { useNow } from '@vueuse/core'
+import { computed, ref } from 'vue'
 
+// Constants
+const EPOCH_MS = new Date(`2012-06-06T01:29:00Z`).setHours(0, 0, 0, 0)
+const ERA_DAYS = 88756
+const DAY_MS = 864e5
 
+const now = useNow()
+const day = computed(() => useDay(now.value))
+
+function useDay(date) {
+  if (!date) return { raw: null }
+  const raw = (new Date(date).getTime() - EPOCH_MS) / DAY_MS
+  const era = Math.floor(raw / ERA_DAYS) + 1
+  const decimal = ((raw % ERA_DAYS) + ERA_DAYS) % ERA_DAYS
+  const dayInt = Math.floor(decimal)
+  const fraction = decimal - dayInt
+
+  return {
+    era,
+    day: dayInt.toString(8).padStart(6, '0'),
+    time: fraction.toString(8).slice(2, 8).padEnd(6, '0'),
+    date,
+    raw,
+    decimal,
+    progress: decimal / ERA_DAYS
+  }
+}
+
+function useDate({ day, time, era = 1 } = {}) {
+  const dayDecimal = parseInt(day, 8)
+  const timeDecimal = time ? parseInt(time, 8) / (8 ** time.length) : 0
+  const decimal = dayDecimal + timeDecimal
+  const raw = (era - 1) * ERA_DAYS + decimal
+
+  return new Date(EPOCH_MS + raw * DAY_MS)
+}
+
+const inputDate = ref()
+const inputDay = ref('034422')
+const inputTime = ref('236533')
 </script>
 
 <template lang="pug">
-section.p-8.bg-green-100
-  .flex.gap-1
-    .font-bold {{Math.floor(octaDays/2920)}} 
-    i octaeteris and
-  .flex.gap-1
-    .font-bold 0o{{Math.floor(octaDays-Math.floor(octaDays/2920)*2920).toString(8)}} 
-    i days
-  h4 {{((Math.floor(dayFraction*4096)).toString(8)).split('').flatMap((_, i, arr) =>   i % 2 === 0 ? [arr[i] + arr[i + 1]] : []).join(':')}} of this day
-
-  p Years passed: {{octaeteride}} octaeteris and {{year}} years
-  p Start: {{currentStart}}
-  p Today: {{now.toUTCString()}}
-  p Total days: 0o{{dayCount.toString(8)}}/0o{{(2920).toString(8)}}
-  p Octave:  {{dayCount%8}}th day of 0o{{octaveCount.toString(8)}}/0o{{(2920/8).toString(8)}} octave
-  p Seasons: 0o{{(dayCount-seasonCount*73).toString(8)}} day of  0o{{seasonCount.toString(8)}}/0o{{(40).toString(8)}} season that started on day 0o{{(seasonCount*73).toString(8)}}
+section.p-8.bg-green-100.w-full.h-full.overflow-y-scroll
+  h2.text-xl.font-bold Octave
+  pre {{day}}
+  input(type="date" v-model="inputDate")
+  pre {{useDay(inputDate)}}
+  pre {{useDate(useDay(inputDate))}}
+  input(v-model="inputDay")
+  input(v-model="inputTime")
+  pre {{useDate({day:inputDay, time:inputTime})}}
 </template>

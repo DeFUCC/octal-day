@@ -9,6 +9,8 @@ export const OCTAETERIS_YEARS = 8;
 export const YEARS_PER_TRANSIT_CYCLE = 243;
 export const OCTAETERIDES_PER_TRANSIT_CYCLE = Math.floor(YEARS_PER_TRANSIT_CYCLE / OCTAETERIS_YEARS);
 
+window.astro = AstroTime
+
 export const astroTime = new AstroTime(new Date())
 export const jd0Astro = new AstroTime(0);
 export const firstTransit = SearchTransit(Body.Venus, jd0Astro);

@@ -10,23 +10,23 @@ This system requires **zero astronomical calculations at runtime**. It is built 
 
 Here is the ground truth date set that anchors the system:
 
-| Event | Date (UTC) | Timestamp | Significance |
-| :--- | :--- | :--- | :--- |
-| **Summer Venus Transit** | `1761-06-06T05:19:00Z` | `-6581846460000` | First predicted transit; dawn of global science. |
-| **Paired Venus Transit** | `1769-06-03T22:25:00Z` | `-6329583300000`  | First observed pair; anchor of the First Era. |
-| **UNIX Epoch** | `1970-01-01T00:00:00Z` | `0` | The machine standard we translate from. |
-| **UNIX Day** | `1970-01-02T00:00:00Z` | `86400000` | The exact value of the mean solar day |
-| **Summer Venus Transit** | `2004-06-08T08:20:00Z` | `1086682800000` | The seed of the modern digital age. |
-| **Paired Venus Transit** | `2012-06-06T01:29:00Z` | `1338946140000` | **The Epoch of the Second Era.** |
-| **Now** | `2026-08-05T13:13:22.572Z` | `1785935602572` | The seed of the modern digital age. |
-| **Winter Venus Transit** | `2117-12-11T02:48:00Z` | `4668634080000` | The validation pair begins |
-| **Paired Venus Transit** | `2125-12-08T16:01:00Z` | `4920883260000` | Validation celebration |
-| **Summer Venus Transit** | `2247-06-11T11:33:00Z` | `8755212780000` | The mark of the cycle celebration |
-| **Paired Venus Transit** | `2255-06-09T04:38:00Z` | `9007475880000` | The Epoch of the Third Era. |
+| Event | Date (UTC) | Timestamp | UT | Significance |
+| :--- | :--- | :--- | :--- | :--- |
+| **Summer Venus Transit** | `1761-06-06T05:19:00Z` | `-6581846460000` | `-87136.27847222223` | First predicted transit; dawn of global science. |
+| **Paired Venus Transit** | `1769-06-03T22:25:00Z` | `-6329583300000`  | `-84216.56597222222` | First observed pair; anchor of the First Era. |
+| **UNIX Epoch** | `1970-01-01T00:00:00Z` | `0` | `-10957.5` | The machine standard we translate from. |
+| **UNIX Day** | `1970-01-02T00:00:00Z` | `86400000` | `-10956.5` | The exact value of the mean solar day |
+| **Summer Venus Transit** | `2004-06-08T08:20:00Z` | `1086682800000` | `1619.8472222222222` | The seed of the modern digital age. |
+| **Paired Venus Transit** | `2012-06-06T01:29:00Z` | `1338946140000` | `4539.561805555555` | **The Epoch of the Second Era.** |
+| **Now** | `2026-08-05T13:13:22.572Z` | `1785935602572` | `9713.050955694445` | The moment this table was created. |
+| **Winter Venus Transit** | `2117-12-11T02:48:00Z` | `4668634080000` | `43077.61666666667` |The validation pair begins |
+| **Paired Venus Transit** | `2125-12-08T16:01:00Z` | `4920883260000` | `45997.16736111111` | Validation celebration |
+| **Summer Venus Transit** | `2247-06-11T11:33:00Z` | `8755212780000` | `90375.98125` | The mark of the cycle celebration |
+| **Paired Venus Transit** | `2255-06-09T04:38:00Z` | `9007475880000` | `93295.69305555556` | The Epoch of the Third Era. |
 
 ### 2012 is the Epoch
 
-We now have the core constant - the Transit Offset `1338946140000 ms / 86400000 ms/day` = `15497.061805555555`  days from the computer time started till it counted the exact `(1338946140000-1086682800000)/86400000` = `2919.7145833333334` days of the Summer Octaeteris 2004-2012. And now we know for sure that in `(9007475880000-1338946140000 ms)/86400000 ms/day` = `88756.13125` days we would see another closing Venus transit of the Summer Pair of year 2255 to reset the counter. But till then we can simply count days - it's `(1785935602572-1338946140000)/86400000` = `5173.489150138889` - this is the exact day of the Second Era. Look at it as Octal fractional number and you have all you need: `0o12065.37234361422564`.
+We now have the core constant - the Transit Offset `1338946140000 ms / 86400000 ms/day` = `15497.061805555555`  days from the computer time started till it counted the exact `(1338946140000-1086682800000)/86400000` = `2919.7145833333334` days of the Summer Octaeteris 2004-2012. And now we know for sure that in `(9007475880000-1338946140000 ms)/86400000 ms/day` = `88756.13125` days we would see another closing Venus transit of the Summer Pair of year 2255 to reset the counter. But till then we can simply count days - it's `(1785935602572-1338946140000)/86400000` = `5173.489150138889` - this is the exact day of the Second Era. Look at it as Octal fractional number and you have all you need: `012065.37234361422564`.
 
 While 2004 was the seed, **2012 is the digital validation point**. The 2004–2012 interval physically proved the 2,920-day resonance of the Octaeteris. Because 2012 was recorded with atomic clock precision, it provides the exact, unambiguous starting line for the Second Era. From 2012, we have an unobstructed observation of the sky, with two grand celebration Octaeterides in the 21st and 22nd centuries ahead of us.
 
