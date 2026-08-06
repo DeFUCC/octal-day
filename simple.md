@@ -19,7 +19,7 @@ Here is the ground truth date set that anchors the system:
 | **Summer Venus Transit** | `2004-06-08T08:20:00Z` | `1086682800000` | `1619.8472222222222` | The seed of the modern digital age. |
 | **Paired Venus Transit** | `2012-06-06T01:29:00Z` | `1338946140000` | `4539.561805555555` | **The Epoch of the Second Era.** |
 | **Now** | `2026-08-05T13:13:22.572Z` | `1785935602572` | `9713.050955694445` | The moment this table was created. |
-| **Winter Venus Transit** | `2117-12-11T02:48:00Z` | `4668634080000` | `43077.61666666667` |The validation pair begins |
+| **Winter Venus Transit** | `2117-12-11T02:48:00Z` | `4668634080000` | `43077.61666666667` | The validation pair begins |
 | **Paired Venus Transit** | `2125-12-08T16:01:00Z` | `4920883260000` | `45997.16736111111` | Validation celebration |
 | **Summer Venus Transit** | `2247-06-11T11:33:00Z` | `8755212780000` | `90375.98125` | The mark of the cycle celebration |
 | **Paired Venus Transit** | `2255-06-09T04:38:00Z` | `9007475880000` | `93295.69305555556` | The Epoch of the Third Era. |
