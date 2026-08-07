@@ -12848,6 +12848,7 @@ var OCTAETERIS_DAYS = 2920;
 var OCTAETERIS_YEARS = 8;
 var YEARS_PER_TRANSIT_CYCLE = 243;
 var OCTAETERIDES_PER_TRANSIT_CYCLE = Math.floor(243 / 8);
+window.astro = AstroTime;
 var astroTime = new AstroTime(/* @__PURE__ */ new Date());
 var jd0Astro = new AstroTime(0);
 var firstTransit = SearchTransit(Body.Venus, jd0Astro);
