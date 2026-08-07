@@ -7,7 +7,7 @@ const T0 = new Date(`1761-06-06T05:19:00Z`)
 const T1 = new Date(`1769-06-03T22:25:00Z`)
 const UNIX_EPOCH = new Date(`1970-01-01T00:00:00Z`)
 const UNIX_DAY = new Date(`1970-01-02T00:00:00Z`)
-const JD0 = new Date(`2000-01-01T11:58:55.816Z`)
+const JD2000 = new Date(`2000-01-01T11:58:55.816Z`)
 const T2 = new Date(`2004-06-08T08:20:00Z`)
 const T3 = new Date(`2012-06-06T01:29:00Z`)
 const today = new Date()
@@ -16,11 +16,11 @@ const T5 = new Date(`2255-06-09T04:38:00Z`)
 
 const T3_DAY = new Date(T3).setHours(0, 0, 0, 0)
 const T5_DAY = new Date(T5).setHours(0, 0, 0, 0)
-const ERA_DAYS = (T5_DAY - T3_DAY) / UNIX_DAY
-const OCTAETERIS = Math.ceil((T3 - T2) / UNIX_DAY)
-const SUNS = 8
-const VENUSES = 5
-const PETAL = OCTAETERIS / (SUNS * VENUSES)
+const ERA_DAYS = (T5_DAY - T3_DAY) / UNIX_DAY // exactly 88756 or 0o255264 in octal
+const OCTAETERIS = Math.ceil((T3 - T2) / UNIX_DAY) // exactly 2920 - 0o5550 in octal
+const SUNS = 8 // 2920/365 - 0o555 in octal
+const VENUSES = 5 //2920/485 - 0o1110 in octal
+const PETAL = OCTAETERIS / (SUNS * VENUSES) // exactly 73, 0o111 - octal repunit of order 3
 
 function useDay(date) {
 
@@ -28,7 +28,7 @@ function useDay(date) {
   if (!date) return { raw }
   raw.date = date
   raw.timestamp = new Date(date).getTime()
-  raw.ut = (raw.timestamp - JD0) / UNIX_DAY
+  raw.ut = (raw.timestamp - JD2000) / UNIX_DAY
   raw.count = (new Date(date) - T3_DAY) / UNIX_DAY
   raw.days = ((raw.count % ERA_DAYS) + ERA_DAYS) % ERA_DAYS
   raw.era = Math.floor(raw.days / ERA_DAYS) + 1
