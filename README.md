@@ -14,7 +14,7 @@ The system expresses time through a recursive, base-8 (octal) subdivision, creat
 | :--- | :--- | :--- | :--- |
 | **Era** | 243 years | `0o...` | The full Venus transit cycle. |
 | **Octaeteris** | 8 years | `0o...` | The 8-solstice counting frame. |
-| **Season** | 73 days | `0o111` | 1/40th of an Octaeteris. |
+| **Petal** | 73 days | `0o111` | 1/40th of an Octaeteris. |
 | **Octave** | 8 days | `0o10` | The continuous, unbroken weekly rhythm. |
 | **Day** | 1 day | `0o1` | One local solar day. |
 | **Octant** | 3 hours | `0o0.1` | 1/8th of a local solar day. |
@@ -24,7 +24,7 @@ The system expresses time through a recursive, base-8 (octal) subdivision, creat
 | **Phrase** | ~2.6 sec | `0o0.00001` | 1/8th of a turn. |
 | **Beat** | ~0.3 sec | `0o0.000001` | 1/8th of a phrase. |
 
-A complete temporal address looks like: `Era-Octaeteris-Season-Day.OctantSessionTopic...` (e.g., `1-2-36-4147.5231`).
+A complete temporal address looks like: `Era-Octaeteris-Petal-Day.OctantSessionTopic...` (e.g., `1-2-36-4147.5231`).
 
 ---
 
@@ -37,7 +37,7 @@ The calendar is anchored to the **local solar midnight immediately preceding the
 The system embraces the natural mechanics of the cosmos. Only the Solar backbone is strictly corrected; the rest are observed as beautiful, drifting harmonies:
 - **Solar Orbit (The Backbone):** The system observes the actual Summer Solstice and resets the boundary at the preceding local midnight. This prevents any seasonal drift.
 - **Venus Cycle:** 5 synodic cycles equal ~2919.6 days. This drifts by ~0.4 days relative to the 2920-day mathematical anchor per Octaeteris, accumulating to a full nodal shift over the 243-year Era.
-- **Lunar Cycle:** 99 synodic months equal ~2923.5 days. This drifts ~1.6 days longer than the 8-year solar frame. Consequently, the lunar phase beautifully *flips* with each 73-day season, shifting by just 1–2 days over two seasons.
+- **Lunar Cycle:** 99 synodic months equal ~2923.5 days. This drifts ~1.6 days longer than the 8-year solar frame. Consequently, the lunar phase beautifully *flips* with each 73-day petal, shifting by just 1–2 days over two petal.
 
 ---
 
