@@ -4,6 +4,7 @@
   "engines": {
     "node": "^24.x"
   },
+  "keywords": ["astronomy", "time", "octal", "base8", "calendar", "venus", "ephemeris", "vue", "generative-art", "clock"],
   "packageManager": "pnpm@11.19.0",
   "type": "module",
   "main": "./dist/index.js",
