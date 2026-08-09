@@ -74,8 +74,8 @@ The durations were not chosen arbitrarily; they are mathematically native to the
 
 ### ⏱️ Time Fraction
 The sub-day time is tracked as a 6-digit base-8 fraction of a day, formatted into three pairs (`xx:xx:xx`). Each pair represents $1/64$th ($8^2$) of the previous unit:
-*   **Octant** (First pair): $24\text{h} / 64 = \mathbf{22.5\text{ minutes}}$
-*   **Session** (Second pair): $22.5\text{m} / 64 \approx \mathbf{21.1\text{ seconds}}$
+*   **Session** (First pair): $24\text{h} / 64 = \mathbf{22.5\text{ minutes}}$
+*   **Turn** (Second pair): $22.5\text{m} / 64 \approx \mathbf{21.1\text{ seconds}}$
 *   **Beat** (Third pair): $21.1\text{s} / 64 \approx \mathbf{0.33\text{ seconds}}$
 
 ---
@@ -102,29 +102,16 @@ The core API consists of two reactive, reversible functions that translate betwe
 import { useDay, useDate } from 'octal-day';
 
 // 1. Convert a UNIX timestamp to the octal structure
-const { raw, octal, render } = useDay(Date.now(), offset);
-
-console.log(render.era);     // e.g., "E1-D012071"
-console.log(render.petal);   // e.g., "e1-t01-p36-d103"
-console.log(render.time);    // e.g., "01:03:63"
+const day = useDay(Date.now(), longitude/360);
 
 // 2. Convert an octal address string back to a JavaScript Date object
-const originalDate = useDate('e1-t01-p36-d103.01:03:63', offset);
+const originalDate = useDate('1-01-4321 01:03:63', longitude/360);
 ```
 
 ### Parameters
 *   `timestamp` (Number): A standard UNIX timestamp in milliseconds. Defaults to `Date.now()`.
-*   `address` (String): The octal address string. The parser intelligently extracts markers (`e`, `t`, `p`, `v`, `d`) regardless of casing or formatting.
+
 *   `offset` (Number): The timezone offset in *fractional days* (e.g., `offset = (timezoneOffset * 60000) / 86400000`). Defaults to `0` (UTC).
-
----
-
-## 🎯 Use Cases
-
-*   **Personal Timekeeping:** Tracking ecological changes, gardening, and personal rhythms aligned with the true solar day and lunar phases.
-*   **Astronomical Logging:** A native, base-8 framework for recording observations, transit events, and orbital mechanics.
-*   **Hardware Projects:** Powering offline-first, e-ink desk clocks or Raspberry Pi displays that show local solar time without relying on network time protocols.
-*   **Symbolic Exploration:** Mapping octal digits to combinatorial systems (like I Ching trigrams/hexagrams) to create mnemonic, multi-modal temporal addresses.
 
 ---
 
