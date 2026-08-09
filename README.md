@@ -59,9 +59,9 @@ The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons poi
 | **`v`** | **Octave** | 8 days | `0o10` | The continuous, unbroken weekly rhythm. |
 | **`d`** | **Day** | 1 day | `0o1` | One local solar day. |
 
-A complete temporal address looks like: `e[era]-t[transit]-p[petal]-v[octave]-d[day].[time]`
+A complete temporal address looks like: `e[era]-t[transit]-p[petal]-d[day].[time]`
 
-**Example Address:** `e1-t01-p36-v10-d3.01:03:63`
+**Example Address:** `e1-t01-p36-d103.01:03:63`
 
 ### 🧮 Octal Elegance
 
@@ -99,11 +99,11 @@ import { useDay, useDate } from 'octal-day';
 const { raw, octal, render } = useDay(Date.now(), offset);
 
 console.log(render.era);     // e.g., "E1-D012071"
-console.log(render.petal);   // e.g., "e1-t01-p36-v10-d3"
+console.log(render.petal);   // e.g., "e1-t01-p36-d103"
 console.log(render.time);    // e.g., "01:03:63"
 
 // 2. Convert an octal address string back to a JavaScript Date object
-const originalDate = useDate('e1-t01-p36-v10-d3.01:03:63', offset);
+const originalDate = useDate('e1-t01-p36-d103.01:03:63', offset);
 ```
 
 ### Parameters

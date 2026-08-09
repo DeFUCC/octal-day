@@ -31,75 +31,16 @@ export function useDay(timestamp = Date.now(), offset = (new Date().getTimezoneO
 
   if (!timestamp) return {}
 
-  const octal = {}
-  const render = {}
-
   const epochDays = (timestamp - T3_DAY) / UNIX_DAY - offset;
   const eraIndex = Math.floor(epochDays / ERA_DAYS)
   const eraDayRaw = epochDays - (eraIndex * ERA_DAYS);
   const normalizedEraDay = ((eraDayRaw % ERA_DAYS) + ERA_DAYS) % ERA_DAYS;
   const transit = Math.floor(normalizedEraDay / TRANSIT_DAYS)
   const transitDay = Math.floor(normalizedEraDay) % TRANSIT_DAYS
-  const petal = Math.floor(transitDay / PETAL)
-  const petalOctave = Math.floor((transitDay - PETAL * petal) / 8)
-  const withinPetal = transitDay % PETAL
-  const dayOfPetalOctave = withinPetal % 8
 
-  const raw = { era: eraIndex, day: normalizedEraDay }
+  const octalTime = (normalizedEraDay % 1).toString(8).padEnd(6, '0').slice(2)
+  const time = `${octalTime.slice(0, 2)}:${octalTime.slice(2, 4)}:${octalTime.slice(4, 6)}`
+  const day = `${(eraIndex + 1).toString(8)}-${transit.toString(8).padStart(2, '0')}-${transitDay.toString(8).padStart(4, '0')}`
 
-  octal.era = (eraIndex + 1).toString(8)
-  octal.eraDay = Math.floor(normalizedEraDay).toString(8)
-  octal.time = (normalizedEraDay % 1).toString(8).padEnd(6, '0').slice(2)
-  octal.transit = transit.toString(8).padStart(2, '0')
-  octal.transitDay = transitDay.toString(8)
-  octal.transitOctave = transitDay.toString(8).slice(0, -1)
-  octal.octave = octal.transitDay.slice(0, -1)
-  octal.octaveDay = octal.transitDay.slice(-1)
-  octal.petal = petal.toString(8)
-  octal.petalOctave = petalOctave.toString(8)
-  octal.petalDay = dayOfPetalOctave.toString(8)
-
-  render.time = `${octal.time.slice(0, 2)}:${octal.time.slice(2, 4)}:${octal.time.slice(4, 6)}`
-  render.era = `E${octal.era}-D${octal.eraDay.padStart(6, '0')}`
-  render.transit = `e${octal.era}-t${octal.transit}-d${octal.transitDay}`
-  render.octave = `e${octal.era}-t${octal.transit}-v${octal.transitOctave}-d${octal.octaveDay}`
-  render.petal = `e${octal.era}-t${octal.transit}-p${octal.petal}-v${octal.petalOctave}-d${octal.petalDay}`
-
-
-  return { raw, octal, render }
-}
-
-export function useDate(address, offset = 0) {
-  if (!address) return new Date()
-
-  let totalDays = 0
-
-  const pattern = /([etspvd])([0-7]+)/gi
-  let match
-
-  while ((match = pattern.exec(address)) !== null) {
-    const marker = match[1].toLowerCase()
-    const value = parseInt(match[2], 8)
-
-    if (MARKERS[marker]) {
-      totalDays += value * MARKERS[marker]
-    }
-  }
-
-  let timeDecimal = 0
-  const timeMatch = address.match(/\.([\d:]+)/)
-  if (timeMatch) {
-    const cleanTime = timeMatch[1].replace(/:/g, '')
-    timeDecimal = parseInt(cleanTime, 8) / Math.pow(8, cleanTime.length)
-  }
-
-  const eraOffset = (Math.floor(totalDays / ERA_DAYS)) * ERA_DAYS
-  const finalDays = totalDays + timeDecimal
-
-  const eraMatch = address.match(/[Ee](\d+)/)
-  const eraIndex = eraMatch ? (parseInt(eraMatch[1], 8) - 1) : 0
-
-  const utcMs = T3_DAY + ((eraIndex * ERA_DAYS) + (totalDays % ERA_DAYS) + timeDecimal) * UNIX_DAY
-
-  return new Date(utcMs + (offset * UNIX_DAY))
+  return `${day} ${time}`
 }
