@@ -20,7 +20,7 @@
     "preview": "vite preview",
     "test": "node tests/astro.test.js"
   },
-  "dependencies": {
+  "devDependencies": {
     "@js-temporal/polyfill": "^0.5.1",
     "@unocss/reset": "^66.7.5",
     "@vueuse/core": "^14.4.0",
@@ -28,9 +28,7 @@
     "globe.gl": "^2.46.1",
     "three": "^0.185.1",
     "vue": "^3.6.0-rc.2",
-    "vue-router": "^5.2.0"
-  },
-  "devDependencies": {
+    "vue-router": "^5.2.0",
     "@unocss/extractor-pug": "^66.7.5",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/language-plugin-pug": "^3.3.9",

@@ -1,14 +1,55 @@
 # `octal-day`
 
-A self-contained, observer-based time system grounded in the octal number system, Solar system cycle observation, and personal-level recording. 
-
-This package provides a parallel framework for tracking time through direct astronomical observation rather than inherited numerical conventions. It is designed to coexist peacefully with any existing civil time standard, serving as a complementary lens for those who wish to align their personal rhythms with the observable sky.
+A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! So now let's look at the numbers:
 
 ---
 
-## 🌌 The Scaling Hierarchy
+## The planetary resonance
 
-The system expresses time through a recursive, base-8 (octal) subdivision, creating a compact and memorable temporal address. 
+The system expresses deep time through recursive octal subdivisions, creating a compact and memorable temporal address. Let's start from basic astronomy. Here's what Wikipedia says:
+
+> When the geocentric ecliptic longitude of Venus coincides with that of the Sun, it is in conjunction with the Sun – inferior if Venus is nearer and superior if farther. The average period between successive Venus conjunctions of one type is 584 days – one synodic period of Venus. Five synodic periods of Venus is almost exactly 13 sidereal Venus years and 8 Earth years, and consequently the longitudes and distances almost repeat.
+
+- Solar year is `~365` days long = `0o555` octal days
+- Venus synodic period is `~584` days = `0o1110` octal days
+- The resonant 5:8:13 alignment of the Venus Octaeteris is `~2920` days = `0o5550` octal days
+- The common divisor of both cycles is prime `73` days = `0o111` - the octal repunit - 5 in the Sun and 8 in the Venus cycles
+
+> In Ancient Greek astronomy, an octaeteris (Greek: ὀκταετηρίς, plural: octaeterides) is the period of eight solar years after which the moon phase occurs on the same day of the year plus one or two days. This period is also in a very good synchronicity with five Venusian visibility cycles (the Venusian synodic period) and thirteen Venusian revolutions around the Sun (Venusian sidereal period). This means, that if Venus is visible beside the Moon, after eight years the two will be again close together near the same date of the calendar.
+
+- Moon cycle is `~29.5` = `0o35.4`,
+- Moon Octaeteris is `~29.5*99=2923.528230` = `0o5553.416350` 
+- With a rule of thumb `29.5*2.5=73.75` = `0o35.4*0o2.4=0o111.65` 
+
+> The octaeteris, also known as oktaeteris, was noted by Cleostratus in ancient Greece as a ⁠2 923+ 1 /2⁠ day cycle. The octaeteris is the calendar used for the Olympic games; if one Olympiad was 50 months long, the next would be 49 lunar months long. This octaeteris calendar is used for the Olympic dial of the Antikythera mechanism, to determine the time of the Olympic games and other Greek festivities.
+
+- Tropical year x	8  =	`2 921.93754` = `0o5551.74001237055304`
+- Synodic lunar month x	99 =	`2 923.528230` = `0o5553.4163502463542`
+- Sidereal lunar month x	107 =  `2 923.417787` = `0o5553.32572026573306`
+- Venusian synodic period x	5 =  `2 919.6` = `0o5547.46314631463146`
+- Venusian sidereal period x	13 =  `2 921.07595` =`0o5551.04670565434206`
+
+> The 3.4° inclination of Venus's orbit is great enough to usually prevent the inferior planet from passing directly between the Sun and Earth at inferior conjunction. Such solar transits of Venus rarely occur, but with great predictability and interest. 
+
+> Venus has a very well observed and predictable orbit. From the perspective of all but the most demanding, its orbit is simple. An equation in Astronomical Algorithms that assumes an unperturbed elliptical orbit predicts the perihelion and aphelion times with an error of a few hours. Using orbital elements to calculate those distances agrees to actual averages to at least five significant figures. Formulas for computing position straight from orbital elements typically do not provide or need corrections for the effects of other planets.
+
+> Transits of Venus reoccur periodically. A pair of transits takes place eight years apart in December (Gregorian calendar) followed by a gap of 121.5 years, before another pair occurs eight years apart in June, followed by another gap, of 105.5 years. The dates advance by about two days per 243-year cycle. The periodicity is a reflection of the fact that the orbital periods of Earth and Venus are close to 8:13 and 243:395 commensurabilities. The last pairs of transits occurred on 8 June 2004 and 5–6 June 2012. The next pair of transits will occur on 10–11 December 2117 and 8 December 2125. A transit lasts approximately 6 hours.
+
+- Venus Transit cycle repeats every `~88756` days = `0o255264` - six digit deep time
+
+## Timestamp grounding
+
+### Venus Transit Era
+
+UNIX timestamp, counting milliseconds continuously since 1 January 1970 - an technical decision, not connected to any observed time anchors. Now as we have obtained the pair of the Venus transit with all the atomic clock slow motion video capture high tech already in place at 2004 and 2012, and also we have preserved clearly dated artifacts from previous transit pair in T1 1761 and T2 1769 - so we can say that we've covered our Era 0 and are already about 5% in the Era 1.
+
+When does our Era start? At the peak of the 2012 Venus transit. It's the moment we obtained the exact timestamp of the second transit in the pair when complex celestial calculations of inferior conjunctions boiled down to the timestamp of the Epoch event at T3 `1338946140000` peak transit. And it starts counting continuous days till next closing transit of the years 2247/2255 at T5 `8755212780000` after `88,756` days or `0o255264`, then resets to zero, while incrementing the Era counter. So to ground a timestamp in deep orbital time we essentially just need to subtract the Epoch from it, then take our first rounding `Math.floor(((Date.now()-1338946140000)/86400000)/88756)+1` for era label (we add 1 to revere to the early science efforts) and modulo `((Date.now()-1338946140000)/86400000)%88756` to get our day in the current era. Everything else is rounding and modulo operations in octal. 
+
+## Octaeteris resonance
+
+The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons points to the single octal number, that organizes the complex relations of celestial bodies into the grid of `0o5550` days and 1-3 day offsets that govern each of the bodies slow observable movement across this grid. So we can get the Transit/octaeTeris number by division: `((Date.now()-1338946140000)/86400000)%88756/2920`.
+
+## Full scale
 
 | Marker | Level | Duration | Octal Rep | Description |
 | :--- | :--- | :--- | :--- | :--- |
@@ -23,6 +64,7 @@ A complete temporal address looks like: `e[era]-t[transit]-p[petal]-v[octave]-d[
 **Example Address:** `e1-t01-p36-v10-d3.01:03:63`
 
 ### 🧮 Octal Elegance
+
 The durations were not chosen arbitrarily; they are mathematically native to the base-8 system:
 *   **Octave (8 days)** is exactly `0o10`. This means dividing a Transit by an Octave in base-8 simply removes the last digit. The "Octave Index" and "Day of the Octave" are natively separated by the radix point in the octal string.
 *   **Petal (73 days)** is exactly `0o111`. 
@@ -43,11 +85,6 @@ The calendar is currently in **Era 1**, anchored to the **June 6, 2012 Venus Tra
 *   **Era 0** corresponds to the historical 1761/1769 transit pair.
 *   **Era 1** spans 88,756 days (~243 years), ending with the next transit pair in 2247/2255.
 
-### Resonance Drift
-The system embraces the natural mechanics of the cosmos. Only the Solar backbone is strictly corrected; the rest are observed as beautiful, drifting harmonies:
-*   **Solar Orbit (The Backbone):** The system observes the actual Summer Solstice and resets the boundary at the preceding local midnight. This prevents any seasonal drift.
-*   **Venus Cycle:** 5 synodic cycles equal ~2919.6 days. This drifts by ~0.4 days relative to the 2920-day mathematical anchor per Transit, accumulating to a full nodal shift over the 243-year Era.
-*   **Lunar Cycle:** 99 synodic months equal ~2923.5 days. This drifts ~1.6 days longer than the 8-year solar frame. Consequently, the lunar phase beautifully *flips* with each 73-day Petal, shifting by just 1–2 days over two Petals.
 
 ---
 
@@ -76,29 +113,6 @@ const originalDate = useDate('e1-t01-p36-v10-d3.01:03:63', offset);
 
 ---
 
-## 🛠️ Framework Integration (Vue 3)
-
-Because `useDay` returns a plain object, it pairs perfectly with reactive frameworks. Here is how to build a live-updating Octal clock in Vue 3 using `@vueuse/core`:
-
-```html
-<script setup>
-import { useNow } from '@vueuse/core'
-import { computed } from 'vue'
-import { useDay, useDate } from 'octal-day'
-
-const now = useNow()
-const day = computed(() => useDay(now.value.getTime()))
-</script>
-
-<template>
-  <h1>Current Era: {{ day.render.era }}</h1>
-  <h2>Petal Address: {{ day.render.petal }}</h2>
-  <p>Time: {{ day.render.time }}</p>
-</template>
-```
-
----
-
 ## 🎯 Use Cases
 
 *   **Personal Timekeeping:** Tracking ecological changes, gardening, and personal rhythms aligned with the true solar day and lunar phases.
@@ -117,4 +131,3 @@ This software is a copyrighted authored material, published as a free-will pract
 This package is offered as a gift to the community of observers, makers, and dreamers. For institutional or commercial redistribution, please reach out to the author to discuss terms. 
 
 *Look up. The territory is still there.*
-```
