@@ -1,5 +1,7 @@
 # `octal-day`
 
+[NPM](https://www.npmjs.com/package/octal-day)
+
 A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! So now let's look at the numbers:
 
 ---
