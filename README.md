@@ -61,7 +61,7 @@ The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons poi
 | **`v`** | **Octave** | 8 days | `0o10` | The continuous, unbroken weekly rhythm. |
 | **`d`** | **Day** | 1 day | `0o1` | One local solar day. |
 
- 73 is the 21st prime number. Its mirror (37) is the 12th and its mirror (21) is the product of multiplying 7 and 3. And it's octal prime repunit 0o111.
+ 73 is the 21st prime number. Its mirror (37) is the 12th and its mirror (21) is the product of multiplying 7 and 3. And it's only  repunit prime 0o111 in octal.
 
 A complete temporal address looks like: `[era]-[transit]-[day] [time]`
 
