@@ -132,6 +132,10 @@ The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons poi
 
 Also known as "Sheldon Cooper Number" - **73** is the 21st prime number. Its mirror (37) is the 12th and its mirror (21) is the product of multiplying 7 and 3. And it's the only repunit prime `0o111` in octal.
 
+## The Lunar Pulse Across the Petal Grid
+
+The 73-day Petal (0o111) is deeply synchronized with the Moon, as 73 days is almost exactly 2.5 lunar synodic months (2.5×29.53≈73.8). This creates a precise 180-degree phase flip at every single Petal boundary: if one Petal begins at a Full Moon, the next will inevitably begin at a New Moon. However, because 5 synodic lunar months (~147.6 days) slightly exceed 2 Petals (exactly 146 days), the Moon gradually drifts by about 1.5 days every pair of Petals. This means the third Petal will begin at a Full Moon again, but shifted 1.5 days later in the lunar cycle. This establishes a beautiful, observable, and alternating rhythm of lunar phases that natively maps to the base-8 grid, allowing observers to track the Moon's progression without relying on arbitrary, mathematically fractured calendar months.
+
 ## Full scale
 
 | Level | Duration | Octal Rep | Description |
