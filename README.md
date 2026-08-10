@@ -5,31 +5,24 @@
 
 A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! 
 
-Published on `1-01-4321 37:16:44`.
+First published on `1-01-4321 37:16:44`.
 
 ~~~~~~js
 */
 const D=864e5, E=88756, T=2920, P=262144, Dn=86400000000000n, Pn=68719476736n, E1=1338940800000;
-
 const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*D))*1000000n : BigInt(Math.round(t + tz*D))*1000000n;
 
-export const octalDay = (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
-  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/Dn, r = ns%Dn;
-  if(r<0n){d--;r+=Dn}
-  let eraBig = d/BigInt(E), eraRem = d%BigInt(E);
-  if(eraRem<0n){eraBig--;eraRem+=BigInt(E)}
-  let e = Number(eraBig)+eo, rm = Number(eraRem);
-  let o = (r*Pn/Dn).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
+export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1)  {
+  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/Dn, r = ns%Dn; if (r<0n) {d--;r+=Dn}
+  let eraBig = d/BigInt(E), eraRem = d%BigInt(E); if(eraRem<0n){eraBig--;eraRem+=BigInt(E)}
+  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*Pn/Dn).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
   return `${e.toString(8)}-${(rm/T|0).toString(8).padStart(2,'0')}-${(rm%T).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
 };
 
-export const octalDate = (s, tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
+export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) {
   let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
   let days=(parseInt(e,8)-eo)*E+parseInt(t,8)*T+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if(mic){ 
-    let [p4,p5,p6]=mic.split(':'); 
-    return BigInt(days)*Dn - BigInt(Math.round(tz*D))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(P) + BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn + BigInt(ep)*1000000n; 
-  }
+  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*Dn - BigInt(Math.round(tz*D))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(P) + BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn + BigInt(ep)*1000000n;}
   return (days + tz + parseInt(p1+p2+p3,8)/P)*D + ep + 164.7949;
 };
 /*

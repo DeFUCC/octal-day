@@ -1,8 +1,8 @@
 <script setup>
 import DayLine from './line.vue'
-import { transits, octaeteride, seasonCount, dayCount, dateToOctaDate } from '../../src/astro.js'
+import { transits, octaeteride, seasonCount, dayCount, dateToOctaDate } from '../astro.js'
 import { computed } from 'vue'
-import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, colors, coord, arrows, trigrams, octime, } from '../../src/useDay.js';
+import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, colors, coord, arrows, trigrams, octime, } from '../useDay.js';
 
 
 

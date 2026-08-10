@@ -1,7 +1,7 @@
 <script setup>
 
-import { recentSolstice, octaeteride, era, octaeteris, year, currentStart, dayCount, octaveCount, seasonCount, transits, jd0Astro, yearLength, startMoon, nextMoon, moonCycle, startSolstice, CALENDAR_EPOCH, yearsPassed, historicalTransits } from '../../src/astro.js';
-import { now, astro, octaDays, octime, coord, dayFraction, octalDayFraction as odf } from '../../src/useDay.js';
+import { recentSolstice, octaeteride, era, octaeteris, year, currentStart, dayCount, octaveCount, seasonCount, transits, jd0Astro, yearLength, startMoon, nextMoon, moonCycle, startSolstice, CALENDAR_EPOCH, yearsPassed, historicalTransits } from '../astro.js';
+import { now, astro, octaDays, octime, coord, dayFraction, octalDayFraction as odf } from '../useDay.js';
 import { computed } from 'vue'
 
 function octal(n, s) {

@@ -1,6 +1,6 @@
 <script setup>
-import { transits, getMoonPhase } from '../../src/astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, moon } from '../../src/useDay.js';
+import { transits, getMoonPhase } from '../astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors, moon } from '../useDay.js';
 
 import MoonPhase from '../MoonPhase.vue'
 </script>

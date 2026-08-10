@@ -2,8 +2,8 @@
 import { useNow } from '@vueuse/core'
 import { computed } from 'vue'
 
-import { transits, octaeterides } from '../../src/astro.js'
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js';
+import { transits, octaeterides } from '../astro.js'
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js';
 
 import { Temporal } from '@js-temporal/polyfill';
 

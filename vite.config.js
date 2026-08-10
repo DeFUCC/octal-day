@@ -27,7 +27,7 @@ export default defineConfig({
   plugins: [
     VueRouter({
       routesFolder: [
-        { src: "web/pages" }
+        { src: "src/pages" }
       ]
     }),
     UnoCSS({
@@ -45,33 +45,8 @@ export default defineConfig({
       extractors: [extractorSplit, extractorPug()],
     }),
     viteSingleFile(),
-    viteBuildScript(),
     vue(),
   ],
 })
 
 
-function viteBuildScript() {
-  return {
-    name: 'vite-build-script',
-    transformIndexHtml(html) {
-      if (process.env.NODE_ENV === 'production') {
-        return html.replace(/<!-- Stats production build insert -->/, `          
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-          .then((registration) => {
-            console.log('Service Worker registered with scope: ', registration.scope);
-          })
-          .catch((error) => {
-            console.error('Service Worker registration failed: ', error);
-          });
-      });
-    }
-  </script>`);
-      }
-      return html;
-    },
-  };
-}

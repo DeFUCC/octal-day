@@ -1,5 +1,5 @@
 <script setup>
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../../src/useDay.js';
+import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js';
 
 
 const oct = octalDayFraction
