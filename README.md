@@ -104,17 +104,21 @@ The system expresses deep time through recursive octal subdivisions, creating a 
 
 > The 3.4° inclination of Venus's orbit is great enough to usually prevent the inferior planet from passing directly between the Sun and Earth at inferior conjunction. Such solar transits of Venus rarely occur, but with great predictability and interest.  [wiki](https://en.wikipedia.org/wiki/Orbit_of_Venus)
 
-- First known transit predicted by Kepler `1761-06-06T05:19:00Z`/`-6581846460000`
-
 > Venus has a very well observed and predictable orbit. From the perspective of all but the most demanding, its orbit is simple. An equation in Astronomical Algorithms that assumes an unperturbed elliptical orbit predicts the perihelion and aphelion times with an error of a few hours. Using orbital elements to calculate those distances agrees to actual averages to at least five significant figures. Formulas for computing position straight from orbital elements typically do not provide or need corrections for the effects of other planets. [wiki](https://en.wikipedia.org/wiki/Orbit_of_Venus)
+
+- First recorded Summer transit observed by Lomonosov: `1761-06-06T05:19:00Z`/`-6581846460000`
+- Second transit in this pair, obseved by Cook, opened Era 0: `1769-06-03T22:25:00Z`/`-6329583300000`
+- First Summer transit broadcasted by live video to be observed: by everyone `2004-06-08T08:20:00Z`/`1086682800000`
+- Second transit in the pair, observed while Venus Express was orbiting the planet, starts the Era 1: `2012-06-06T01:29:00Z`/`1338946140000`
+- Next Summer transit to observe in the future: `2247-06-11T11:33:00Z`/`8755212780000`
+- The closing Transit of the Era 1, beginning of Era 2: `2255-06-09T04:38:00Z`/`9007475880000`
+
 
 > Transits of Venus reoccur periodically. A pair of transits takes place eight years apart in December (Gregorian calendar) followed by a gap of 121.5 years, before another pair occurs eight years apart in June, followed by another gap, of 105.5 years. The dates advance by about two days per 243-year cycle. The periodicity is a reflection of the fact that the orbital periods of Earth and Venus are close to 8:13 and 243:395 commensurabilities. The last pairs of transits occurred on 8 June 2004 and 5–6 June 2012. The next pair of transits will occur on 10–11 December 2117 and 8 December 2125. A transit lasts approximately 6 hours. [wiki](https://en.wikipedia.org/wiki/Transit_of_Venus)
 
 - Venus Transit cycle repeats every `~88756` days = `0o255264` - six digit deep time
 
-## Timestamp grounding
-
-### Venus Transit Era
+## Venus Transit Era
 
 UNIX timestamp, counting milliseconds continuously since 1 January 1970 - an technical decision, not connected to any observed time anchors. Now as we have obtained the pair of the Venus transit with all the atomic clock slow motion video capture high tech already in place at 2004 and 2012, and also we have preserved clearly dated artifacts from previous transit pair in T1 1761 and T2 1769 - so we can say that we've covered our Era 0 and are already about 5% in the Era 1.
 
