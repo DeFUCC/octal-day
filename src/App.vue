@@ -8,9 +8,9 @@ main.h-100svh.flex.flex-col.items-center
       RouterLink.text-2xl.font-bold(to="/") Octal Day
       nav.flex.flex-wrap.gap-2
         RouterLink(to="/daytime") Time
+        RouterLink(to="/table") Table
         RouterLink(to="/derivation") Derivation
         RouterLink(to="/day") Day
-        RouterLink(to="/table") Table
         RouterLink(to="/earth") Earth
         RouterLink(to="/moon") Moon
         RouterLink(to="/venus") Venus
