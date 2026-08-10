@@ -9,21 +9,21 @@ First published on `1-01-4321 37:16:44`.
 
 ~~~~~~js
 */
-const D=864e5, E=88756, T=2920, P=262144, Dn=86400000000000n, Pn=68719476736n, E1=1338940800000;
-const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*D))*1000000n : BigInt(Math.round(t + tz*D))*1000000n;
+export const EPOCH_1=1086652800000, ERA_DAYS=88756, TRANSIT_DAYS=2920, DAY_MS=864e5,  DAY_NS=86400000000000n, TIME_SCALE=262144, MICRO_SCALE=68719476736n;
+export const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*DAY_MS))*1000000n : BigInt(Math.round(t + tz*DAY_MS))*1000000n;
 
-export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1)  {
-  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/Dn, r = ns%Dn; if (r<0n) {d--;r+=Dn}
-  let eraBig = d/BigInt(E), eraRem = d%BigInt(E); if(eraRem<0n){eraBig--;eraRem+=BigInt(E)}
-  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*Pn/Dn).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
-  return `${e.toString(8)}-${(rm/T|0).toString(8).padStart(2,'0')}-${(rm%T).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
+export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1)  {
+  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/DAY_NS, r = ns%DAY_NS; if (r<0n) {d--;r+=DAY_NS}
+  let eraBig = d/BigInt(ERA_DAYS), eraRem = d%BigInt(ERA_DAYS); if(eraRem<0n){eraBig--;eraRem+=BigInt(ERA_DAYS)}
+  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*MICRO_SCALE/DAY_NS).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
+  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
 };
 
-export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) {
+export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1) {
   let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
-  let days=(parseInt(e,8)-eo)*E+parseInt(t,8)*T+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*Dn - BigInt(Math.round(tz*D))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(P) + BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn + BigInt(ep)*1000000n;}
-  return (days + tz + parseInt(p1+p2+p3,8)/P)*D + ep;
+  let days=(parseInt(e,8)-eo)*ERA_DAYS+parseInt(t,8)*TRANSIT_DAYS+parseInt(d,8), [p1,p2,p3]=std.split(':');
+  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*DAY_NS - BigInt(Math.round(tz*DAY_MS))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(TIME_SCALE) + BigInt(parseInt(p4+p5+p6,8)))*DAY_NS/MICRO_SCALE + BigInt(ep)*1000000n;}
+  return (days + tz + parseInt(p1+p2+p3,8)/TIME_SCALE)*DAY_MS + ep;
 };
 /*
 ~~~~~~
@@ -69,11 +69,11 @@ const originalNs = octalDate(strNs, longOffset);
 
 *   **`t`** (`Number` | `BigInt`): A continuous timestamp. `Number` is interpreted as milliseconds (e.g., `Date.now()`), while `BigInt` is interpreted as nanoseconds (e.g., `process.hrtime.bigint()`). Defaults to `Date.now()`.
 *   **`tz`** (`Number`): The local timezone offset in *fractional days*. 
-    *   From system clock: `new Date().getTimezoneOffset() / 1440`
-    *   From geographic longitude: `-longitude / 360` *(Negative for East, Positive for West)*. 
+    *   From system clock: `-new Date().getTimezoneOffset() / 1440`
+    *   From geographic longitude: `longitude / 360` *(Negative for East, Positive for West)*. 
     *   Defaults to `0` (UTC).
-*   **`ep`** (`Number`): The Epoch anchor in milliseconds. Defaults to `1338940800000` (2012-06-06 local midnight).
-*   **`eo`** (`Number`): The Era offset integer. Defaults to `1` (aligning 2012 with Era 1, making 1769-2012 Era -1).
+*   **`ep`** (`Number`): The Epoch anchor in milliseconds. Defaults to `1086652800000` (2004-06-08 local midnight). For other eras their respective anchors use is preferred - it is set at UTC midnight starting the day of the Transit observation, e.g. `-6581846460000` for 1761-2004 Era 0.
+*   **`eo`** (`Number`): The Era offset integer. Defaults to `1` (aligning 2004 with Era 1, making 1761-2004 Era 0), change to the corresponding era number if custom Epoch is used
 
 ***
 
@@ -106,12 +106,12 @@ The system expresses deep time through recursive octal subdivisions, creating a 
 
 > Venus has a very well observed and predictable orbit. From the perspective of all but the most demanding, its orbit is simple. An equation in Astronomical Algorithms that assumes an unperturbed elliptical orbit predicts the perihelion and aphelion times with an error of a few hours. Using orbital elements to calculate those distances agrees to actual averages to at least five significant figures. Formulas for computing position straight from orbital elements typically do not provide or need corrections for the effects of other planets. [wiki](https://en.wikipedia.org/wiki/Orbit_of_Venus)
 
-- First recorded Summer transit observed by Lomonosov: `1761-06-06T05:19:00Z`/`-6581846460000`
-- Second transit in this pair, obseved by Cook, opened Era 0: `1769-06-03T22:25:00Z`/`-6329583300000`
-- First Summer transit broadcasted by live video to be observed: by everyone `2004-06-08T08:20:00Z`/`1086682800000`
-- Second transit in the pair, observed while Venus Express was orbiting the planet, starts the Era 1: `2012-06-06T01:29:00Z`/`1338946140000`
-- Next Summer transit to observe in the future: `2247-06-11T11:33:00Z`/`8755212780000`
-- The closing Transit of the Era 1, beginning of Era 2: `2255-06-09T04:38:00Z`/`9007475880000`
+- First recorded Summer transit observed by Lomonosov opens Era 0: `1761-06-06T05:19:00Z`/`-6581846460000`
+- Second transit in this pair, obseved by Cook: `1769-06-03T22:25:00Z`/`-6329583300000`
+- First Summer transit broadcasted by live video to be observed by everyone starts the Era 1 `2004-06-08T08:20:00Z`/`1086682800000`
+- Second transit in the pair, observed while Venus Express was orbiting the planet: `2012-06-06T01:29:00Z`/`1338946140000`
+- The closing Transit of the Era 1, beginning of Era 2: `2247-06-11T11:33:00Z`/`8755212780000`
+- Second transit in the pair exatly after one Transit cycle: `2255-06-09T04:38:00Z`/`9007475880000`
 
 
 > Transits of Venus reoccur periodically. A pair of transits takes place eight years apart in December (Gregorian calendar) followed by a gap of 121.5 years, before another pair occurs eight years apart in June, followed by another gap, of 105.5 years. The dates advance by about two days per 243-year cycle. The periodicity is a reflection of the fact that the orbital periods of Earth and Venus are close to 8:13 and 243:395 commensurabilities. The last pairs of transits occurred on 8 June 2004 and 5–6 June 2012. The next pair of transits will occur on 10–11 December 2117 and 8 December 2125. A transit lasts approximately 6 hours. [wiki](https://en.wikipedia.org/wiki/Transit_of_Venus)
@@ -122,11 +122,11 @@ The system expresses deep time through recursive octal subdivisions, creating a 
 
 UNIX timestamp, counting milliseconds continuously since 1 January 1970 - an technical decision, not connected to any observed time anchors. Now as we have obtained the pair of the Venus transit with all the atomic clock slow motion video capture high tech already in place at 2004 and 2012, and also we have preserved clearly dated artifacts from previous transit pair in T1 1761 and T2 1769 - so we can say that we've covered our Era 0 and are already about 5% in the Era 1.
 
-When does our Era start? At the peak of the 2012 Venus transit. It's the moment we obtained the exact timestamp of the second transit in the pair when complex celestial calculations of inferior conjunctions boiled down to the timestamp of the Epoch event at T3 `1338946140000` peak transit. And it starts counting continuous days till next closing transit of the years 2247/2255 at T5 `8755212780000` after `88,756` days or `0o255264`, then resets to zero, while incrementing the Era counter. So to ground a timestamp in deep orbital time we essentially just need to subtract the Epoch from it, then take our first rounding `Math.floor(((Date.now()-1338946140000)/86400000)/88756)+1` for era label (we add 1 to revere to the early science efforts) and modulo `((Date.now()-1338946140000)/86400000)%88756` to get our day in the current era. Everything else is rounding and modulo operations in octal. 
+When does our Era start? At the peak of the 2004 Venus transit. It's the moment we obtained the exact timestamp of the second transit in the pair when complex celestial calculations of inferior conjunctions boiled down to the timestamp of the Epoch event at T2 `1086652800000` peak transit. And it starts counting continuous days till next closing transit of the years 2247/2255 at T4 `8755212780000` after `88,756` days or `0o255264`, then resets to zero, while incrementing the Era counter. So to ground a timestamp in deep orbital time we essentially just need to subtract the Epoch from it, then take our first rounding `Math.floor(((Date.now()-1086652800000)/86400000)/88756)+1` for era label (we add 1 to revere to the early science efforts) and modulo `((Date.now()-1086652800000)/86400000)%88756` to get our day in the current era. Everything else is rounding and modulo operations in octal. 
 
 ## Octaeteris resonance
 
-The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons points to the single octal number, that organizes the complex relations of celestial bodies into the grid of `0o5550` days and 1-3 day offsets that govern each of the bodies slow observable movement across this grid. So we can get the Transit/octaeTeris number by division: `((Date.now()-1338946140000)/86400000)%88756/2920`.
+The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons points to the single octal number, that organizes the complex relations of celestial bodies into the grid of `0o5550` days and 1-3 day offsets that govern each of the bodies slow observable movement across this grid. So we can get the Transit/octaeTeris number by division: `((Date.now()-1086652800000)/86400000)%88756/2920`.
 
 ## The Petal Number
 
@@ -168,9 +168,9 @@ Let's read this example time of day `41:74:47`. The most valid way is to just re
 
 ### The Epoch
 
-The calendar is currently in **Era 1**, anchored to the **June 6, 2012 Venus Transit** (`2012-06-06T00:00:00Z`). This marks the second half of the most recent Venus transit pair (2004/2012). 
+The calendar is currently in **Era 1**, anchored to the **June 8, 2004 Venus Transit** (`2004-06-08T00:00:00Z`). This marks the the most recent Venus transit pair (2004/2012). 
 *   **Era 0** corresponds to the historical 1761/1769 transit pair.
-*   **Era 1** spans 88,756 days (~243 years), ending with the next transit pair in 2247/2255.
+*   **Era 1** spans 88,756 days (~243 years), starting on 2004 and ending with the next transit pair in 2247.
 
 The Venus transit cycle is anchored by a near-exact orbital resonance between Earth and Venus. Over **88756 days** (243.0008 years), Earth completes 243 sidereal orbits while Venus completes 395, yielding exactly **152 inferior conjunctions** — the synodic beat between the two planets. Within this cycle, transits occur in pairs separated by **2920 days** (7.995 years), the interval required for Venus to lap Earth by roughly 21.5 degrees of heliocentric longitude and return to the same orbital node. These two numbers are not approximations: across the 951 standard eras in the Solex dataset, the Venus Era holds to 88756.04 ± 0.42 days, and the pair interval to 2920.00 ± 0.25 days. The resonance is stable because the ratio 395:152 (≈ 2.59868) differs from the true period ratio by only 0.001%, locking the pattern in place.
 
