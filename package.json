@@ -1,10 +1,31 @@
 {
   "name": "octal-day",
   "version": "0.8.4",
+  "description": "Planetary Time Scale",
+  "homepage": "https://octal.defucc.me/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/defucc/octal-day.git"
+  },
+  "author": {
+    "name": "Davay42",
+    "email": "davay@defucc.me",
+    "url": "https://starovdenis.com/"
+  },
+  "keywords": [
+    "astronomy",
+    "time",
+    "octal",
+    "base8",
+    "calendar",
+    "venus",
+    "ephemeris",
+    "generative-art",
+    "clock"
+  ],
   "engines": {
     "node": "^24.x"
   },
-  "keywords": ["astronomy", "time", "octal", "base8", "calendar", "venus", "ephemeris",  "generative-art", "clock"],
   "packageManager": "pnpm@11.19.0",
   "type": "module",
   "main": "./dist/index.js",
