@@ -12,7 +12,7 @@ export default {
         publicDir: false,
         target: 'es2020',
         outDir: 'dist',
-        minify: false,
+        minify: true,
         sourcemap: false,
     }
 }

@@ -58,12 +58,12 @@ console.log('\n🌌 Running octal-day test suite...\n');
 
 // 1. Epoch Anchors
 test('Era 1 Epoch (2012-06-06) maps to 1-00-0000 00:00:00', () => {
-  const str = octalDay(1338940800000, 0);
+  const str = octalDay(1086652800000, 0);
   assertEqual(str, '1-00-0000 00:00:00');
 });
 
 test('Era 2 Epoch (2255-06-09) maps to 2-00-0000 00:00:00', () => {
-  const era2Ms = 1338940800000 + (88756 * 86400000);
+  const era2Ms = 1086652800000 + (88756 * 86400000);
   const str = octalDay(era2Ms, 0);
   assertEqual(str, '2-00-0000 00:00:00');
 });
@@ -96,10 +96,10 @@ test('High Precision (BigInt) round-trips within hardware quantization limits', 
 
 // 5. Timezone / Longitude Offsets
 test('Timezone offset shifts the day boundary correctly', () => {
-  const str = octalDay(1338940800000, 0.5);
+  const str = octalDay(1086652800000, 0.5);
   assertEqual(str, '1-00-0000 40:00:00');
 
-  const preEpochMs = 1338940800000 - (12 * 3600 * 1000);
+  const preEpochMs = 1086652800000 - (12 * 3600 * 1000);
   const str2 = octalDay(preEpochMs, 0.5);
   assertEqual(str2, '1-00-0000 00:00:00');
 });
@@ -119,7 +119,7 @@ test('High-precision output strictly matches the micro-scale format', () => {
 
 // 7. Edge Cases
 test('Handles exact day boundaries without fractional bleed', () => {
-  const oneDayMs = 1338940800000 + 86400000;
+  const oneDayMs = 1086652800000 + 86400000;
   const str = octalDay(oneDayMs, 0);
   assertEqual(str, '1-00-0001 00:00:00');
 });

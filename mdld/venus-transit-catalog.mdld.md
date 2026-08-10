@@ -1,3 +1,5 @@
+/*
+
 [venus] <https://eclipse.gsfc.nasa.gov/transit/catalog/VenusCatalog#>
 
 # Six Millennium Catalog of Venus Transits {=venus:catalog .venus:Catalog .prov:Collection label}
@@ -21,6 +23,26 @@ This document is an MD-LD rendering of the [Catalog of Transits of Venus](https:
 ### Transits (Meeus, 1989) {=venus:meeus-transits-1989 .prov:Entity label}
 
 > “Transits” by Jean Meeus, Willmann-Bell, 1989 — source of the Besselian elements used for the predictions. {comment @en}
+
+~~~~~~js
+*/
+
+import { parse } from 'mdld-parse'
+import catalog from './venus-transit-catalog.mdld.md?raw'
+
+export const { quads } = parse(catalog)
+const nasa = id => `https://eclipse.gsfc.nasa.gov/transit/catalog/VenusCatalog#${id}`
+
+export const list = quads.map(q => {
+  if (!(q.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type' && q.object.value === nasa('TransitOfVenus'))) { return false }
+  return q.subject.value
+}).filter(Boolean).sort()
+
+export const epochStart = quads.find(q => q.subject.value == nasa('transit-2004-06-08') && q.predicate.value == nasa('greatestTransit')).object.value
+
+
+/*
+~~~~~~
 
 
 
@@ -1001,3 +1023,5 @@ Recorded: [2026-07-16] {prov:generatedAtTime ^^xsd:date}
 ---
 
 *Transit Predictions by Fred Espenak, NASA/GSFC — converted to MD-LD with all dates normalized to proleptic Gregorian xsd:dateTime (UT, astronomical year numbering).*
+
+*/

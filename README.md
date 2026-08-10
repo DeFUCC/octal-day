@@ -9,21 +9,21 @@ First published on `1-01-4321 37:16:44`.
 
 ~~~~~~js
 */
-const D=864e5, E=88756, T=2920, P=262144, Dn=86400000000000n, Pn=68719476736n, E1=1338940800000;
-const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*D))*1000000n : BigInt(Math.round(t + tz*D))*1000000n;
+export const EPOCH_1=1086652800000, ERA_DAYS=88756, TRANSIT_DAYS=2920, DAY_MS=864e5,  DAY_NS=86400000000000n, TIME_SCALE=262144, MICRO_SCALE=68719476736n;
+export const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*DAY_MS))*1000000n : BigInt(Math.round(t + tz*DAY_MS))*1000000n;
 
-export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1)  {
-  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/Dn, r = ns%Dn; if (r<0n) {d--;r+=Dn}
-  let eraBig = d/BigInt(E), eraRem = d%BigInt(E); if(eraRem<0n){eraBig--;eraRem+=BigInt(E)}
-  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*Pn/Dn).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
-  return `${e.toString(8)}-${(rm/T|0).toString(8).padStart(2,'0')}-${(rm%T).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
+export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1)  {
+  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/DAY_NS, r = ns%DAY_NS; if (r<0n) {d--;r+=DAY_NS}
+  let eraBig = d/BigInt(ERA_DAYS), eraRem = d%BigInt(ERA_DAYS); if(eraRem<0n){eraBig--;eraRem+=BigInt(ERA_DAYS)}
+  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*MICRO_SCALE/DAY_NS).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
+  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
 };
 
-export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) {
+export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1) {
   let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
-  let days=(parseInt(e,8)-eo)*E+parseInt(t,8)*T+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*Dn - BigInt(Math.round(tz*D))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(P) + BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn + BigInt(ep)*1000000n;}
-  return (days + tz + parseInt(p1+p2+p3,8)/P)*D + ep;
+  let days=(parseInt(e,8)-eo)*ERA_DAYS+parseInt(t,8)*TRANSIT_DAYS+parseInt(d,8), [p1,p2,p3]=std.split(':');
+  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*DAY_NS - BigInt(Math.round(tz*DAY_MS))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(TIME_SCALE) + BigInt(parseInt(p4+p5+p6,8)))*DAY_NS/MICRO_SCALE + BigInt(ep)*1000000n;}
+  return (days + tz + parseInt(p1+p2+p3,8)/TIME_SCALE)*DAY_MS + ep;
 };
 /*
 ~~~~~~
@@ -69,11 +69,11 @@ const originalNs = octalDate(strNs, longOffset);
 
 *   **`t`** (`Number` | `BigInt`): A continuous timestamp. `Number` is interpreted as milliseconds (e.g., `Date.now()`), while `BigInt` is interpreted as nanoseconds (e.g., `process.hrtime.bigint()`). Defaults to `Date.now()`.
 *   **`tz`** (`Number`): The local timezone offset in *fractional days*. 
-    *   From system clock: `new Date().getTimezoneOffset() / 1440`
-    *   From geographic longitude: `-longitude / 360` *(Negative for East, Positive for West)*. 
+    *   From system clock: `-new Date().getTimezoneOffset() / 1440`
+    *   From geographic longitude: `longitude / 360` *(Negative for East, Positive for West)*. 
     *   Defaults to `0` (UTC).
-*   **`ep`** (`Number`): The Epoch anchor in milliseconds. Defaults to `1338940800000` (2012-06-06 local midnight).
-*   **`eo`** (`Number`): The Era offset integer. Defaults to `1` (aligning 2012 with Era 1, making 1769-2012 Era -1).
+*   **`ep`** (`Number`): The Epoch anchor in milliseconds. Defaults to `1086652800000` (2004-06-08 local midnight). For other eras their respective anchors use is preferred - it is set at UTC midnight starting the day of the Transit observation, e.g. `-6581846460000` for 1761-2004 Era 0.
+*   **`eo`** (`Number`): The Era offset integer. Defaults to `1` (aligning 2004 with Era 1, making 1761-2004 Era 0), change to the corresponding era number if custom Epoch is used
 
 ***
 
@@ -106,12 +106,12 @@ The system expresses deep time through recursive octal subdivisions, creating a 
 
 > Venus has a very well observed and predictable orbit. From the perspective of all but the most demanding, its orbit is simple. An equation in Astronomical Algorithms that assumes an unperturbed elliptical orbit predicts the perihelion and aphelion times with an error of a few hours. Using orbital elements to calculate those distances agrees to actual averages to at least five significant figures. Formulas for computing position straight from orbital elements typically do not provide or need corrections for the effects of other planets. [wiki](https://en.wikipedia.org/wiki/Orbit_of_Venus)
 
-- First recorded Summer transit observed by Lomonosov: `1761-06-06T05:19:00Z`/`-6581846460000`
-- Second transit in this pair, obseved by Cook, opened Era 0: `1769-06-03T22:25:00Z`/`-6329583300000`
-- First Summer transit broadcasted by live video to be observed: by everyone `2004-06-08T08:20:00Z`/`1086682800000`
-- Second transit in the pair, observed while Venus Express was orbiting the planet, starts the Era 1: `2012-06-06T01:29:00Z`/`1338946140000`
-- Next Summer transit to observe in the future: `2247-06-11T11:33:00Z`/`8755212780000`
-- The closing Transit of the Era 1, beginning of Era 2: `2255-06-09T04:38:00Z`/`9007475880000`
+- First recorded Summer transit observed by Lomonosov opens Era 0: `1761-06-06T05:19:00Z`/`-6581846460000`
+- Second transit in this pair, obseved by Cook: `1769-06-03T22:25:00Z`/`-6329583300000`
+- First Summer transit broadcasted by live video to be observed by everyone starts the Era 1 `2004-06-08T08:20:00Z`/`1086682800000`
+- Second transit in the pair, observed while Venus Express was orbiting the planet: `2012-06-06T01:29:00Z`/`1338946140000`
+- The closing Transit of the Era 1, beginning of Era 2: `2247-06-11T11:33:00Z`/`8755212780000`
+- Second transit in the pair exatly after one Transit cycle: `2255-06-09T04:38:00Z`/`9007475880000`
 
 
 > Transits of Venus reoccur periodically. A pair of transits takes place eight years apart in December (Gregorian calendar) followed by a gap of 121.5 years, before another pair occurs eight years apart in June, followed by another gap, of 105.5 years. The dates advance by about two days per 243-year cycle. The periodicity is a reflection of the fact that the orbital periods of Earth and Venus are close to 8:13 and 243:395 commensurabilities. The last pairs of transits occurred on 8 June 2004 and 5–6 June 2012. The next pair of transits will occur on 10–11 December 2117 and 8 December 2125. A transit lasts approximately 6 hours. [wiki](https://en.wikipedia.org/wiki/Transit_of_Venus)
@@ -122,11 +122,11 @@ The system expresses deep time through recursive octal subdivisions, creating a 
 
 UNIX timestamp, counting milliseconds continuously since 1 January 1970 - an technical decision, not connected to any observed time anchors. Now as we have obtained the pair of the Venus transit with all the atomic clock slow motion video capture high tech already in place at 2004 and 2012, and also we have preserved clearly dated artifacts from previous transit pair in T1 1761 and T2 1769 - so we can say that we've covered our Era 0 and are already about 5% in the Era 1.
 
-When does our Era start? At the peak of the 2012 Venus transit. It's the moment we obtained the exact timestamp of the second transit in the pair when complex celestial calculations of inferior conjunctions boiled down to the timestamp of the Epoch event at T3 `1338946140000` peak transit. And it starts counting continuous days till next closing transit of the years 2247/2255 at T5 `8755212780000` after `88,756` days or `0o255264`, then resets to zero, while incrementing the Era counter. So to ground a timestamp in deep orbital time we essentially just need to subtract the Epoch from it, then take our first rounding `Math.floor(((Date.now()-1338946140000)/86400000)/88756)+1` for era label (we add 1 to revere to the early science efforts) and modulo `((Date.now()-1338946140000)/86400000)%88756` to get our day in the current era. Everything else is rounding and modulo operations in octal. 
+When does our Era start? At the peak of the 2004 Venus transit. It's the moment we obtained the exact timestamp of the second transit in the pair when complex celestial calculations of inferior conjunctions boiled down to the timestamp of the Epoch event at T2 `1086652800000` peak transit. And it starts counting continuous days till next closing transit of the years 2247/2255 at T4 `8755212780000` after `88,756` days or `0o255264`, then resets to zero, while incrementing the Era counter. So to ground a timestamp in deep orbital time we essentially just need to subtract the Epoch from it, then take our first rounding `Math.floor(((Date.now()-1086652800000)/86400000)/88756)+1` for era label (we add 1 to revere to the early science efforts) and modulo `((Date.now()-1086652800000)/86400000)%88756` to get our day in the current era. Everything else is rounding and modulo operations in octal. 
 
 ## Octaeteris resonance
 
-The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons points to the single octal number, that organizes the complex relations of celestial bodies into the grid of `0o5550` days and 1-3 day offsets that govern each of the bodies slow observable movement across this grid. So we can get the Transit/octaeTeris number by division: `((Date.now()-1338946140000)/86400000)%88756/2920`.
+The resonant period of 5 synodic cycles of Venus, 8 Earth years and 99 Moons points to the single octal number, that organizes the complex relations of celestial bodies into the grid of `0o5550` days and 1-3 day offsets that govern each of the bodies slow observable movement across this grid. So we can get the Transit/octaeTeris number by division: `((Date.now()-1086652800000)/86400000)%88756/2920`.
 
 ## The Petal Number
 
@@ -168,9 +168,9 @@ Let's read this example time of day `41:74:47`. The most valid way is to just re
 
 ### The Epoch
 
-The calendar is currently in **Era 1**, anchored to the **June 6, 2012 Venus Transit** (`2012-06-06T00:00:00Z`). This marks the second half of the most recent Venus transit pair (2004/2012). 
+The calendar is currently in **Era 1**, anchored to the **June 8, 2004 Venus Transit** (`2004-06-08T00:00:00Z`). This marks the the most recent Venus transit pair (2004/2012). 
 *   **Era 0** corresponds to the historical 1761/1769 transit pair.
-*   **Era 1** spans 88,756 days (~243 years), ending with the next transit pair in 2247/2255.
+*   **Era 1** spans 88,756 days (~243 years), starting on 2004 and ending with the next transit pair in 2247.
 
 The Venus transit cycle is anchored by a near-exact orbital resonance between Earth and Venus. Over **88756 days** (243.0008 years), Earth completes 243 sidereal orbits while Venus completes 395, yielding exactly **152 inferior conjunctions** — the synodic beat between the two planets. Within this cycle, transits occur in pairs separated by **2920 days** (7.995 years), the interval required for Venus to lap Earth by roughly 21.5 degrees of heliocentric longitude and return to the same orbital node. These two numbers are not approximations: across the 951 standard eras in the Solex dataset, the Venus Era holds to 88756.04 ± 0.42 days, and the pair interval to 2920.00 ± 0.25 days. The resonance is stable because the ratio 395:152 (≈ 2.59868) differs from the true period ratio by only 0.001%, locking the pattern in place.
 
@@ -217,6 +217,35 @@ A Petal is 73 days, which contains exactly **8 Core Octaves (64 days)** plus a 9
 
 #### 3. The 8 Years of the Octaeteris 
 Each year of the 8-year cycle takes on the character of its corresponding planet, from the swift, reactive Year 0 (Mercury) to the slow, culminating, and deeply reflective Year 7 (Neptune), before the cycle resets to 0.
+
+## Epoch List
+
+- **Era `-30` (-4314 BCE) — The Roots of Complexity:** Farming communities across the Fertile Crescent, the Nile, the Indus, the Yellow River, and the Andes independently grow into settled towns with specialized crafts and shared rituals. By ~4071 BCE, long-distance trade networks carry obsidian, shells, and copper across continents — the parallel emergence of complex society on every inhabited landmass.
+- **Era `-27` (-3828 BCE) — The First Temples:** Mesopotamia's Ubaid culture spreads temple-centered settlements; in Egypt, Hierakonpolis and Naqada grow into ceremonial centers; along the Yellow River, Yangshao villages expand into planned communities; Saharan pastoralists thrive beside vast lake systems. By ~3706 BCE, pan-regional cultural horizons emerge on multiple continents simultaneously.
+- **Era `-26` (-3585 BCE) — The Wheel & The Plow:** In Mesopotamia the wheel, potter's wheel, and plow transform agriculture and transport. In Egypt proto-kingdoms form; China's Dawenkou culture emerges; in the Indus Valley, early Kot Diji settlements expand. By ~3463 BCE, the first interregional trade networks link the Aegean, Anatolia, and the Levant — with parallel networks equally vibrant along the Nile, the Indus, and the Yellow River.
+- **Era `-25` (-3342 BCE) — The First Cities:** Uruk reaches 40,000–80,000 people with monumental temples and proto-writing — but Egypt's Naqada III proto-kingdoms, China's Longshan walled settlements, and the Indus Kot Diji phase develop in parallel. By ~3220 BCE, proto-writing appears independently in Mesopotamia and Egypt, and megalithic builders construct Newgrange in Europe — monumental architecture arising independently across civilizations.
+- **Era `-24` (-3099 BCE) — The Invention of Writing:** Proto-cuneiform matures in Mesopotamia; Egypt independently invents hieroglyphs within a century — two civilizations arriving at the same idea. China and the Indus Valley develop their own script traditions. By ~2977 BCE, the first literary compositions and legal archives appear alongside the first monumental earthworks in North America's lower Mississippi Valley.
+- **Era `-23` (-2856 BCE) — The First Nation-States:** Egypt unifies under a centralized bureaucracy; Mesopotamian city-states develop councils and recorded legal decisions. China transitions to early Bronze Age societies; the Indus mature Harappan civilization begins its rise. By ~2734 BCE, Mesopotamia produces the first libraries, Egypt builds Djoser's Step Pyramid, Caral-Supe emerges in Peru with platform mounds and quipu — states arising independently on four continents.
+- **Era `-22` (-2613 BCE) — The Age of Pyramids & Grid Cities:** Egypt builds the Giza pyramids; Mesopotamia's city-states peak with the royal tombs of Ur; the Indus Valley's Harappa and Mohenjo-daro house 40,000+ with grid-planned streets and drainage — a civilization larger than Egypt and Mesopotamia combined. By ~2491 BCE, Egypt inscribes the *Pyramid Texts* and develops a 365-day calendar; Caral peaks in Peru; and the Minoan civilization rises on Crete.
+- **Era `-21` (-2370 BCE) — The First Empires:** Sargon of Akkad founds the first multi-ethnic empire with a postal system and standing army; Enheduanna becomes the world's first named author. Egypt's Old Kingdom reaches its final heights; the Harappan civilization governs the largest Bronze Age polity; China's Erlitou culture develops early state structures. By ~2248 BCE, Akkad collapses, demonstrating the fragility of centralized power — while independent experiments in governance continue across Eurasia, the Americas, and Africa; not a single cradle, but many.
+- **Era `-20` (-2127 BCE) — The First Urban Commonwealths:** Ur III creates the world's first bureaucratic state; the earliest *Gilgamesh* poems explore mortality — humanity's first literature. By ~2005 BCE, Stonehenge reaches its final form as an astronomical observatory, and Mohenjo-daro rises with grid-planned streets and public baths.
+- **Era `-17` (-1884 BCE) — The Code of Justice:** Hammurabi's Code (~1754 BCE) establishes that laws must be public, universal, and written in the common tongue. Egypt's Middle Kingdom produces the earliest philosophical literature. By ~1762 BCE, the Harappan civilization proves that planned cities with sanitation and peaceful trade are possible.
+- **Era `-16` (-1641 BCE) — The Dawn of Mathematics:** Babylonian mathematicians develop the base-60 system (60-minute hours, 360° circles); Egyptian surveyors master geometry. The Minoan civilization builds Europe's first cities with indoor plumbing. By ~1519 BCE, Babylonian astronomers systematically track planets and predict eclipses.
+- **Era `-15` (-1398 BCE) — The Age of Diplomacy & Revelation:** The Amarna letters (~1350 BCE) — the first diplomatic archive — show great powers addressing each other as brothers. Akhenaten introduces the first recorded monotheism; the Egyptian-Hittite treaty (1258 BCE) proves nations can make peace. By ~1276 BCE, Ramesses II builds monumentally and the Shang produce their finest bronzes.
+- **Era `-14` (-1155 BCE) — The Bronze Age Commonwealth:** Shang oracle bone script emerges in China; Mycenaean Greece builds palatial economies; the Olmec rises in Mesoamerica; Ugaritic scribes bridge logographic and phonetic writing. By ~1033 BCE, international trade unites the Aegean, Anatolia, the Levant, Egypt, and Mesopotamia.
+- **Era `-13` (-912 BCE) — The Alphabet & The Oracle:** The Phoenician alphabet — ancestor of all modern alphabets — democratizes literacy. Homer's epics found Western literature; the Olympic Games (776 BCE) establish peaceful competition; the Kingdom of Kush rules Egypt. By ~790 BCE, the Greek *polis* experiments with governance and the *Mahabharata* takes shape.
+- **Era `-12` (-669 BCE) — The Axial Age Ignition:** Confucius, the Buddha, Laozi, and Mahavira redefine ethics in China, India, and Greece. Thales proposes natural causes; Pythagoras discovers mathematical harmonies — across civilizations, humans simultaneously ask *what is real, what is good, how should we live?*
+- **Era `-11` (-426 BCE) — The Philosophical Dawn:** Plato and Aristotle create Western philosophy; Ashoka spreads Buddhist *dharma* across Asia; Eratosthenes measures Earth's circumference; Euclid writes the *Elements*; Zeno founds Stoicism; Aristarchus proposes heliocentrism.
+- **Era `-10` (-184 BCE) — The Hellenistic Convergence:** Greek, Persian, and Indian cultures fuse; the Roman Republic develops rule of law; Lucretius articulates atomic theory. By ~62 BCE, Hipparchus discovers the precession of the equinoxes, the Antikythera mechanism models the heavens, and Cicero articulates natural law.
+- **Era `-7` (0060 CE) — The First Universalisms:** Buddhism spreads eastward; Stoicism teaches the common moral worth of all humans; Ptolemy's *Almagest* frames astronomy for 1,400 years. By ~182 CE, the Silk Road connects Rome, Parthia, Kushan India, and Han China in one network.
+- **Era `-6` (0303 CE) — The Philosophical Bridge:** Neoplatonism unites Greek philosophy with mysticism; Augustine fuses Christian theology with Platonic reason; Aryabhata proposes Earth's rotation. By ~425 CE, Buddhist pilgrims carry texts along the Silk Road and the Gupta golden age begins.
+- **Era `-5` (0546 CE) — The Classical Codification:** Justinian's *Corpus Juris Civilis* preserves Roman law; Brahmagupta formalizes zero and negative numbers. By ~668 CE, the Tang golden age begins, the Hagia Sophia rises, and the Maya build cities aligned to Venus cycles.
+- **Era `-4` (0789 CE) — The Cosmopolitan Exchange:** Charlemagne in the West; al-Khwarizmi gives the world algebra and algorithms. By ~911 CE, Avicenna's *Canon of Medicine* synthesizes all medical knowledge, al-Biruni measures Earth's circumference, and Viking explorers reach Vinland.
+- **Era `-3` (1032 CE) — The Golden Synthesis:** Song dynasty innovations (movable type, gunpowder, compass), Alhazen's *Book of Optics*, and the birth of universities. By ~1153 CE, the Toledo translation movement carries Greek and Arabic knowledge into Latin Europe; al-Idrisi maps the known world.
+- **Era `-2` (1275 CE) — The Polymath Awakening:** Universities rise across Europe; Marco Polo opens eyes to Asia; Ibn Khaldun founds the philosophy of history; Dante and Giotto ignite the Italian Renaissance. By ~1397 CE, the Ming reunifies China and the Timurid Renaissance patronizes science across Central Asia.
+- **Era `-1` (1518 CE) — The Humanist Renaissance:** Magellan proves Earth's unity; Copernicus, Kepler, and Galileo dismantle the geocentric cosmos. By ~1640 CE, Descartes founds rationalism and Newton unifies heaven and earth — the scientific method is born.
+- **Era `0` (1761 CE) — The Enlightenment:** Reason replaces dogma; the 1761 Venus transit measures the Solar System's scale. By ~1883 CE, Maxwell unifies electromagnetism, Darwin reveals life's deep history, and germ theory conquers disease.
+- **Era `1` (2004 CE) — The Planetary Web:** The internet, the Human Genome Project, and Wikipedia give humanity a shared nervous system. By ~2126 CE, AI, interplanetary exploration, and quantum computing reshape what it means to be human.
 
 
 ---

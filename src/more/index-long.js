@@ -9,10 +9,10 @@ const VENUS_T3 = new Date(`2012-06-06T01:29:00Z`) // 1338946140000
 const VENUS_T4 = new Date(`2247-06-11T11:33:00Z`) // 8755212780000
 const VENUS_T5 = new Date(`2255-06-09T04:38:00Z`) // 9007475880000
 
-const T3_DAY = new Date(VENUS_T3).setUTCHours(0, 0, 0, 0) // 1338940800000
-const T5_DAY = new Date(VENUS_T5).setUTCHours(0, 0, 0, 0) // 9007459200000
+const T2_DAY = new Date(VENUS_T3).setUTCHours(0, 0, 0, 0) // 1086652800000
+const T4_DAY = new Date(VENUS_T4).setUTCHours(0, 0, 0, 0) // 8755171200000
 
-const ERA_DAYS = (T5_DAY - T3_DAY) / UNIX_DAY // 88756 === 0o255264
+const ERA_DAYS = (T4_DAY - T2_DAY) / UNIX_DAY // 88756 === 0o255264
 const TRANSIT_DAYS = Math.round((VENUS_T3 - VENUS_T2) / UNIX_DAY) // 2920 === 0o5550
 
 export const MARKERS = {
@@ -25,7 +25,7 @@ export function useDay(timestamp = Date.now(), offset = (new Date().getTimezoneO
 
   if (!timestamp) return {}
 
-  const epochDays = (timestamp - T3_DAY) / UNIX_DAY - offset;
+  const epochDays = (timestamp - T2_DAY) / UNIX_DAY - offset;
   const eraIndex = Math.floor(epochDays / ERA_DAYS)
   const eraDayRaw = epochDays - (eraIndex * ERA_DAYS);
   const normalizedEraDay = ((eraDayRaw % ERA_DAYS) + ERA_DAYS) % ERA_DAYS;
