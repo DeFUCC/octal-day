@@ -47,6 +47,7 @@ section.border-1.bg-orange-50.shadow-xl.flex-auto.gap-2.flex.flex-col.items-cent
       .flex.gap-2.items-center.flex-wrap
         .text-md.op-90 🌞
         .text-xs.op-50 .{{Math.floor(d.sun.elon/360*512).toString(8).padEnd(3,'0')}}
+      .flex-1 
       .flex.gap-2.items-center.flex-wrap
         .rounded-full.w-4.h-4.shadow-lg(:style="{backgroundColor: d.venus.visibility =='morning' ? 'yellow': 'lightblue'}")
         .text-xs.op-50 .{{(Math.floor((d.venus.elongation/360)*4096)).toString(8).padStart(4,'0')}}
