@@ -1,5 +1,5 @@
 /*
-# `octal-day`
+# `octal-day` - Planetary Time Scale
 
 [NPM](https://www.npmjs.com/package/octal-day)
 
@@ -10,9 +10,10 @@ Published on `1-01-4321 37:16:44`.
 ~~~~~~js
 */
 const D=864e5, E=88756, T=2920, P=262144, Dn=86400000000000n, Pn=68719476736n, E1=1338940800000;
-const toNs = (t, tz) => typeof t=='bigint' ? t - BigInt(Math.round(tz*D))*1000000n : BigInt(Math.round(t - tz*D))*1000000n;
 
-export const octalDay = (t=Date.now(), tz=new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
+const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*D))*1000000n : BigInt(Math.round(t + tz*D))*1000000n;
+
+export const octalDay = (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
   let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/Dn, r = ns%Dn;
   if(r<0n){d--;r+=Dn}
   let eraBig = d/BigInt(E), eraRem = d%BigInt(E);
@@ -22,11 +23,14 @@ export const octalDay = (t=Date.now(), tz=new Date().getTimezoneOffset()/1440, e
   return `${e.toString(8)}-${(rm/T|0).toString(8).padStart(2,'0')}-${(rm%T).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
 };
 
-export const octalDate = (s, tz=new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
+export const octalDate = (s, tz=-new Date().getTimezoneOffset()/1440, ep=E1, eo=1) => {
   let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
   let days=(parseInt(e,8)-eo)*E+parseInt(t,8)*T+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if(mic){ let [p4,p5,p6]=mic.split(':'); return BigInt(days)*Dn+BigInt(Math.round(tz*D))*1000000n+(BigInt(parseInt(p1+p2+p3,8))*Pn+BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn+BigInt(ep)*1000000n; }
-  return (days+tz+parseInt(p1+p2+p3,8)/P)*D+ep;
+  if(mic){ 
+    let [p4,p5,p6]=mic.split(':'); 
+    return BigInt(days)*Dn - BigInt(Math.round(tz*D))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(P) + BigInt(parseInt(p4+p5+p6,8)))*Dn/Pn + BigInt(ep)*1000000n; 
+  }
+  return (days + tz + parseInt(p1+p2+p3,8)/P)*D + ep + 164.7949;
 };
 /*
 ~~~~~~

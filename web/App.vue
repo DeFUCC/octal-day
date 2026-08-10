@@ -7,7 +7,7 @@ main.h-100svh.flex.flex-col.items-center
     .flex.flex-row.gap-2.bg-teal-100.p-4.justify-between.items-center.flex-auto.flex-wrap
       RouterLink.text-2xl.font-bold(to="/") Octal Day
       nav.flex.flex-wrap.gap-2
-        RouterLink(to="/octave") Octave
+        RouterLink(to="/daytime") Time
         RouterLink(to="/derivation") Derivation
         RouterLink(to="/day") Day
         RouterLink(to="/table") Table

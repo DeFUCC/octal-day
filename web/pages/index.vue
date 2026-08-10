@@ -1,35 +1,27 @@
 <script setup>
-import DayLine from './line.vue'
-import { transits, octaeteride, seasonCount, dayCount, dateToOctaDate } from '../../src/astro.js'
-import { computed } from 'vue'
-import { now, astro, octaDays, dayFraction, octalDayFraction as oct, levels, colors, coord, arrows, trigrams, octime, } from '../../src/useDay.js';
+import { useNow } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { octalDay } from '../../README.md'
 
+const now = useNow()
+const day = computed(() => octalDay(now.value.getTime()))
+const inputDate = ref()
+const inputDay = ref('034422')
+const inputTime = ref('236533')
 
+const VENUS_T0 = new Date(`1761-06-06T05:19:00Z`)  // -6581846460000 
+const VENUS_T1 = new Date(`1769-06-03T22:25:00Z`) // -6329583300000
+const UNIX_EPOCH = new Date(`1970-01-01T00:00:00Z`) // 0
+const UNIX_DAY = new Date(`1970-01-02T00:00:00Z`) // 86400000
+const VENUS_T2 = new Date(`2004-06-08T08:20:00Z`) // 1086682800000
+const VENUS_T3 = new Date(`2012-06-06T01:29:00Z`) // 1338946140000
+const VENUS_T4 = new Date(`2247-06-11T11:33:00Z`) // 8755212780000
+const VENUS_T5 = new Date(`2255-06-09T04:38:00Z`) // 9007475880000
 
 </script>
 
 <template lang="pug">
-section.bg-yellow-50.flex.flex-col.gap-2.p-2.overflow-y-scroll
-  .flex.gap-2.justify-between
-    .font-mono {{octaeteride.toString(8)}}-{{Math.floor(dateToOctaDate().day/73).toString(8)}}-{{(dateToOctaDate().day-Math.floor(dateToOctaDate().day/73)*73).toString(8)}}
-    .flex-1
-    .font-bold {{dateToOctaDate().day%8}} 
-    .flex-1
-    .font-mono {{octime}}
-  .flex.flex-col.gap-2.justify-around.shadow-lg.rounded-lg(v-for="(level,l) in levels" :key="level" )
-    .p-2.flex.gap-4.font-mono.items-center.flex-1.transition-500(:style="{backgroundColor:colors[oct[l]]+'11'}") 
-      .text-2xl {{oct[l]}}
-      .op-90.font-mono.flex-1 {{level}}
-      .flex-1
-      .text-2xl {{arrows[oct[l]]}}
-      .flex-1 
-      .text-2xl {{trigrams[oct[l]]}}
-    
-    .p-2.bg-light-200.flex.gap-2
-      .op-30.text-xs {{Number('0o'+oct.slice(0,l+1))}}/{{Math.pow(8,l+1)}}
-      .flex-1
-      .flex
-        .p-1.m-1.flex-1.transition.border-1.border-dark-100.border-op-50.shadow.shadow-inset.rounded-xl(v-for="(row,r) in 8" :style="{backgroundColor:r==oct[l]?colors[oct[l]]:'transparent'}")
-
+section.p-8.bg-green-100.w-full.h-full.overflow-y-scroll.flex.flex-col.gap-2
+    h1.text-4xl {{day}}
 
 </template>
