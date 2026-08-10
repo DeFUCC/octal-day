@@ -3,7 +3,7 @@
 export default {
     build: {
         lib: {
-            entry: 'src/index.js',
+            entry: 'README.md',
             name: 'parse',
             fileName: 'index',
             formats: ['es']
