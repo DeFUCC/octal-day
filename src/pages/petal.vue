@@ -31,26 +31,23 @@ const days = computed(() => {
 </script>
 
 <template lang="pug">
-section.border-1.bg-orange-50.shadow-xl.flex-auto.gap-2.flex.flex-col.items-center.overflow-y-scroll.my-2px.w-full
-  p Petal {{petal.toString(8)}}, Day {{day}}
+section.border-1.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-center.overflow-y-scroll.my-2px.w-full.text-light-400
+  h1.text-lg Era {{date.split('-')[0]}}, Transit {{date.split('-')[1]}} Petal {{petal.toString(8)}}, Day {{day}}
   .grid.w-full.octave-grid.gap-1.mb-10
-    .flex.p-1.bg-orange-100.sticky.top-0.z-20(v-for="(p,pp) in planets") 
+    .flex.p-1.bg-dark-500.sticky.top-0.z-20(v-for="(p,pp) in planets") 
       span {{pp}}
       .flex-1
       span {{ p.slice(0,2)}}
-    .flex.flex-wrap.items-center.gap-1.p-2.bg-orange-100.z-10.border-2.shadow-sm.rounded-lg(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#333':'transparent'}") 
-      .flex-auto.w-full.op-60 {{d.oct}}
+    .flex.flex-wrap.items-center.gap-1.p-2.bg-dark-200.z-10.border-2.shadow-sm.rounded-lg(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#eee':'transparent'}") 
+      .flex-auto.w-full.op-90 {{d.oct}}
       .flex.gap-2.items-center.flex-wrap
-        .text-md.op-90  {{moonPhases[Math.round(d.moon.angle/360*8)%8]}}
-        .text-xs.op-50 .{{Math.floor(d.moon.angle/360*64).toString(8).padEnd(2,'0')}}
+        .text-xs.op-80 {{moonPhases[Math.round(d.moon.angle/360*8)%8]}}.{{Math.floor(d.moon.angle/360*64).toString(8).padEnd(2,'0')}}
       .flex-1 
       .flex.gap-2.items-center.flex-wrap
-        .text-md.op-90 🌞
-        .text-xs.op-50 .{{Math.floor(d.sun.elon/360*512).toString(8).padEnd(3,'0')}}
+        .text-xs.op-80 🌞.{{Math.floor(d.sun.elon/360*512).toString(8).padEnd(3,'0')}}
       .flex-1 
       .flex.gap-2.items-center.flex-wrap
-        .rounded-full.w-4.h-4.shadow-lg(:style="{backgroundColor: d.venus.visibility =='morning' ? 'yellow': 'lightblue'}")
-        .text-xs.op-50 .{{(Math.floor((d.venus.elongation/360)*4096)).toString(8).padStart(4,'0')}}
+        .text-xs.op-80  {{d.venus.visibility =='morning' ? '🟡': '🔵'}}.{{(Math.floor((d.venus.elongation/360)*4096)).toString(8).padStart(4,'0')}}
 </template>
 
 
