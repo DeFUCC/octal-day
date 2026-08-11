@@ -1,11 +1,10 @@
 /*
 # `octal-day` - Planetary Time Scale
 
-[NPM](https://www.npmjs.com/package/octal-day)
+A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
 
-A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! 
-
-First published on `1-02-4321 37:16:44`.
+First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source, that gets built into the 
+[NPM](https://www.npmjs.com/package/octal-day) package and the [demo](https://octal.js.org/) web-app. Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
 
 ~~~~~~js
 */
@@ -16,7 +15,7 @@ export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440,
   let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/DAY_NS, r = ns%DAY_NS; if (r<0n) {d--;r+=DAY_NS}
   let eraBig = d/BigInt(ERA_DAYS), eraRem = d%BigInt(ERA_DAYS); if(eraRem<0n){eraBig--;eraRem+=BigInt(ERA_DAYS)}
   let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*MICRO_SCALE/DAY_NS).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
-  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
+  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')}` + ` ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
 };
 
 export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1) {
@@ -46,7 +45,7 @@ Conversely, `octalDate` reverses this by parsing the canonical string into base-
 import { octalDay, octalDate } from 'octal-day';
 
 // 1. Standard Precision (Milliseconds)
-const tzOffset = new Date().getTimezoneOffset() / 1440; // e.g., -0.333 for UTC+8
+const tzOffset = -new Date().getTimezoneOffset() / 1440; // e.g., -0.333 for UTC+8
 const ms = Date.now();
 const strMs = octalDay(ms, tzOffset); 
 // → "1-02-4321 41:74:47"
@@ -217,6 +216,43 @@ A Petal is 73 days, which contains exactly **8 Core Octaves (64 days)** plus a 9
 
 #### 3. The 8 Years of the Octaeteris 
 Each year of the 8-year cycle takes on the character of its corresponding planet, from the swift, reactive Year 0 (Mercury) to the slow, culminating, and deeply reflective Year 7 (Neptune), before the cycle resets to 0.
+
+
+
+---
+
+
+## 🕰️ EPOCH_NAMES: A Timeline of Human Awakening
+
+Mapped to the Summer Venus Transits (Descending Node, Series 3) from the NASA/GSFC Six Millennium Catalog. Each Era spans 88,756 days (243 years).
+
+~~~~~~js
+export const EPOCH_NAMES = {
+  "-24": "The First Marks",           // 3100 BCE · Writing, quipu, songlines
+  "-23": "The Urban Geometry",        // 2857 BCE · Cities, plumbing, grids
+  "-22": "The Monument Zenith",       // 2614 BCE · Pyramids, Indus planning, Austronesian sails
+  "-21": "The Resilient Seed",        // 2371 BCE · Climate adaptation, knowledge migration
+  "-20": "The Maritime Thread",       // 2128 BCE · Sea trade, first literature, Vedic hymns
+  "-17": "The Palace Networks",       // 1885 BCE · Knossos, bronze, Thera dispersal
+  "-16": "The Bronze Correspondence", // 1642 BCE · Amarna letters, diplomacy, Olmec
+  "-15": "The First Peace",           // 1399 BCE · Hittite-Egyptian treaty, iron, alphabet
+  "-14": "The Scattered Seeds",       // 1156 BCE · Zhou Mandate, Bantu expansion, Phoenician script
+  "-13": "The Questioning",           //  913 BCE · Upanishads, Sappho, the question "Why?"
+  "-12": "The Axial Awakening",       //  670 BCE · Buddha, Confucius, Socrates, ahimsa
+   "-11": "The Compassionate Edict",   //  427 BCE · Ashoka's non-violence, Plato, Patañjali
+   "-10": "The Silk Dharma",           //  184 BCE · Buddhism spreads, Stoic logos, Sangam poetry
+   "-7": "The Syncretic Bloom",       //   60 BCE · Gandhara, paper, Nagarjuna, Long Count
+   "-6": "The Zero and the Infinite", //  303 CE  · Aryabhata, Nalanda, Gupta sciences
+   "-5": "The Parallel Libraries",    //  546 CE  · Baghdad, Chang'an, Tikal, Timbuktu
+   "-4": "The Algebraic Dawn",        //  789 CE  · Al-Khwarizmi, Song printing, compass
+   "-3": "The Institutional Light",   // 1032 CE  · Universities, Angkor Wat, ayllu
+   "-2": "The Printed World",         // 1275 CE  · Hangul, Gutenberg, Polynesian wayfinding
+   "-1": "The Empirical Dawn",        // 1518 CE  · Heliocentrism, telescope, Akbar's dialogue
+    "0": "The Measured Sky",          // 1761 CE  · Global transit observation, human rights
+    "1": "The Planetary Web",         // 2004 CE  · Open-source, climate science, digital commons
+};
+
+~~~~~~
 
 
 ---

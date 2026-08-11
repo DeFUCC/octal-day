@@ -55,17 +55,15 @@ section.border-1.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-cente
       span {{pp}}
       .flex-1
       span {{ p.slice(0,2)}}
-    .flex.flex-wrap.items-center.gap-1.p-5px.bg-dark-200.z-10.border-2.shadow-sm.rounded-lg.hover-bg-dark-50.transition(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#eee':'transparent'}") 
-      .flex-auto.w-full.op-90.flex.flex-wrap.gap-1.items-center
+    .flex.flex-wrap.items-start.gap-1.p-5px.bg-dark-200.z-10.border-2.shadow-sm.rounded-lg.hover-bg-dark-50.transition(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#eee':'transparent'}") 
+      .flex-auto.w-full.flex.flex-wrap.gap-1.items-center(style="flex:8rem")
         .flex-1.text-sm {{d.oct}}
-        .text-xs.font-mono.op-60 {{d?.name}}
-      .flex.gap-2.items-center.flex-wrap
+        .text-xs.font-mono {{d?.name}}
+      .flex.gap-2.items-center.flex-wrap(style="flex:3rem")
         .text-xs.op-80 {{moonPhases[Math.round(d.moon.angle/360*8)%8]}}.{{Math.floor(d.moon.angle/360*64).toString(8).padEnd(2,'0')}}
-      .flex-1 
-      .flex.gap-2.items-center.flex-wrap
+      .flex.gap-2.items-center.flex-wrap(style="flex:3rem")
         .text-xs.op-80 🌞.{{Math.floor(d.sun.elon/360*512).toString(8).padEnd(3,'0')}}
-      .flex-1 
-      .flex.gap-2.items-center.flex-wrap
+      .flex.gap-2.items-center.flex-wrap(style="flex:3rem")
         .text-xs.op-80  {{d.venus.visibility =='morning' ? '🟡': '🔵'}}.{{(Math.floor((d.venus.elongation/360)*4096)).toString(8).padStart(4,'0')}}
 
 </template>
