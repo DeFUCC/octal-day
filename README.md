@@ -5,7 +5,7 @@
 
 A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! 
 
-First published on `1-01-4321 37:16:44`.
+First published on `1-02-4321 37:16:44`.
 
 ~~~~~~js
 */
@@ -49,7 +49,7 @@ import { octalDay, octalDate } from 'octal-day';
 const tzOffset = new Date().getTimezoneOffset() / 1440; // e.g., -0.333 for UTC+8
 const ms = Date.now();
 const strMs = octalDay(ms, tzOffset); 
-// → "1-01-4321 41:74:47"
+// → "1-02-4321 41:74:47"
 
 const originalMs = octalDate(strMs, tzOffset); 
 // → 1700000000000 (Number)
@@ -59,7 +59,7 @@ const originalMs = octalDate(strMs, tzOffset);
 const longOffset = -longitude / 360; // e.g., -120 / 360 = -0.333 for 120°E
 const ns = process.hrtime.bigint(); // or getBrowserNs()
 const strNs = octalDay(ns, longOffset); 
-// → "1-01-4321 41:74:47.12:53:60"
+// → "1-02-4321 41:74:47.12:53:60"
 
 const originalNs = octalDate(strNs, longOffset); 
 // → 1700000000000123456n (BigInt)
@@ -154,7 +154,7 @@ The 73-day Petal (0o111) is deeply synchronized with the Moon, as 73 days is alm
 
 A complete temporal address looks like: `[Era]-[Transit]-[Day] [OctantSession]:[TopicTurn]:[PhraseBeat]`
 
-**Example Octal Day Time:** `1-01-4321 01:03:63`
+**Example Octal Day Time:** `1-02-4321 01:03:63`
 
 ### ⏱️ Time Fraction
 

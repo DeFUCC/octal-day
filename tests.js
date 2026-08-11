@@ -126,7 +126,7 @@ test('Handles exact day boundaries without fractional bleed', () => {
 
 // 🌟 FIX: The string round-trips perfectly, but the ms timestamp will snap to the nearest 330ms grid line.
 test('Parses arbitrary valid strings back to timestamps (with quantization awareness)', () => {
-  const str = '1-01-1234 23:45:67';
+  const str = '1-02-1234 23:45:67';
   const ms = octalDate(str, 0);
   const str2 = octalDay(ms, 0);
 

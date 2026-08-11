@@ -31,9 +31,7 @@ a.router-active {
 
 body,
 html {
-  overflow: hidden;
-  height: 100%;
-  overscroll-behavior: none;
+
   background-color: #222;
 }
 
