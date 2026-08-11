@@ -3,27 +3,55 @@
 
 A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
 
-First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source, that gets built into the 
-[NPM](https://www.npmjs.com/package/octal-day) package and the [demo](https://octal.js.org/) web-app. Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
+First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source published at [GitHub repo](https://github.com/defucc/octal-day/), that gets built into the 
+[NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octal.js.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
 
 ~~~~~~js
 */
-export const EPOCH_1=1086652800000, ERA_DAYS=88756, TRANSIT_DAYS=2920, DAY_MS=864e5,  DAY_NS=86400000000000n, TIME_SCALE=262144, MICRO_SCALE=68719476736n;
-export const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*DAY_MS))*1000000n : BigInt(Math.round(t + tz*DAY_MS))*1000000n;
+export const EPOCH_1 = 1086652800000, ERA_DAYS = 88756;
+export const TRANSIT_DAYS = 2920, DAY_MS = 864e5;
+export const DAY_NS = 86400000000000n, TIME_SCALE = 262144;
+export const MICRO_SCALE = 68719476736n;
+const toNs = (t, tz) => {  const tzMs = Math.round(tz * DAY_MS);  const tzNs = BigInt(tzMs) * 1000000n;  return typeof t === 'bigint' ? t + tzNs     : BigInt(Math.round(t + tz * DAY_MS)) * 1000000n;};
 
-export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1)  {
-  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/DAY_NS, r = ns%DAY_NS; if (r<0n) {d--;r+=DAY_NS}
-  let eraBig = d/BigInt(ERA_DAYS), eraRem = d%BigInt(ERA_DAYS); if(eraRem<0n){eraBig--;eraRem+=BigInt(ERA_DAYS)}
-  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*MICRO_SCALE/DAY_NS).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
-  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')}` + ` ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
-};
+// Convert timestamp to canonical octal-day string
+export function octalDay(t = Date.now(),   tz = -new Date().getTimezoneOffset() / 1440,   ep = EPOCH_1, eo = 1) {
+  let ns = toNs(t, tz) - BigInt(ep) * 1000000n;
+  let d = ns / DAY_NS, r = ns % DAY_NS;  if (r < 0n) { d--; r += DAY_NS; }
+  let eb = d / BigInt(ERA_DAYS);  let er = d % BigInt(ERA_DAYS);
+  if (er < 0n) { eb--; er += BigInt(ERA_DAYS); }
+  const era = (Number(eb) + eo).toString(8);  const rm = Number(er);
+  const tr = (rm / TRANSIT_DAYS | 0).toString(8).padStart(2, '0');
+  const dy = (rm % TRANSIT_DAYS).toString(8).padStart(4, '0');
+  const o = (r * MICRO_SCALE / DAY_NS).toString(8).padStart(12, '0');
+  const time = `${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}`;
+  const micro = typeof t === 'bigint' ? 
+    `.${o.slice(6,8)}:${o.slice(8,10)}:${o.slice(10,12)}` : '';  
+    return `${era}-${tr}-${dy} ${time}${micro}`;
+}
 
-export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1) {
-  let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
-  let days=(parseInt(e,8)-eo)*ERA_DAYS+parseInt(t,8)*TRANSIT_DAYS+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*DAY_NS - BigInt(Math.round(tz*DAY_MS))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(TIME_SCALE) + BigInt(parseInt(p4+p5+p6,8)))*DAY_NS/MICRO_SCALE + BigInt(ep)*1000000n;}
-  return (days + tz + parseInt(p1+p2+p3,8)/TIME_SCALE)*DAY_MS + ep;
-};
+// Parse canonical octal-day string back to timestamp
+export function octalDate( s, 
+tz = -new Date().getTimezoneOffset() / 1440,   
+ep = EPOCH_1, eo = 1) {
+  const [dt, tm] = s.split(' ');
+  const [e, t, d] = dt.split('-');
+  const [std, mic] = tm.split('.');
+  const [p1, p2, p3] = std.split(':');
+  const days = (parseInt(e, 8) - eo) * ERA_DAYS  + parseInt(t, 8) 
+    * TRANSIT_DAYS + parseInt(d, 8);
+  if (mic) {
+    const [p4, p5, p6] = mic.split(':');
+    const tzMs = Math.round(tz * DAY_MS);
+    const tzNs = BigInt(tzMs) * 1000000n;
+    const stdNs = BigInt(parseInt(p1+p2+p3, 8)) * BigInt(TIME_SCALE);
+    const micNs = BigInt(parseInt(p4+p5+p6, 8));
+    return BigInt(days) * DAY_NS - tzNs + (stdNs + micNs) 
+      * DAY_NS / MICRO_SCALE + BigInt(ep) * 1000000n;
+  }
+  return (days + tz + parseInt(p1+p2+p3, 8) / TIME_SCALE) 
+    * DAY_MS + ep;
+}
 /*
 ~~~~~~
 
