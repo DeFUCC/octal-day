@@ -13,6 +13,7 @@ const day = computed(() => date.value.split('-')[2])
 const petal = computed(() => Math.floor(Number(`0o${day.value}`) / 73))
 const firstDay = computed(() => (petal.value * 73))
 const lastDay = computed(() => ((petal.value + 1) * 73))
+
 const days = computed(() => {
   const initialDay = Number(`0o${firstDay.value.toString(8).padStart(4, '0').slice(0, 3)}0`)
   const ds = Array(80).fill(1).map((_, i) => {
@@ -23,7 +24,11 @@ const days = computed(() => {
     const venus = Elongation(Body.Venus, timestamp)
     const moon = { angle: MoonPhase(timestamp), phase: Illumination(Body.Moon, timestamp).phase_fraction }
     const sun = SunPosition(timestamp)
-    return { dec, oct, octal, timestamp, venus, moon, sun }
+    let name
+    if ([firstDay.value.toString(8).padStart(4, '0').slice(0, 3), lastDay.value.toString(8).padStart(4, '0').slice(0, 3)].includes(oct.slice(0, 3))) { name = 'glue' } else {
+      name = 'block'
+    }
+    return { dec, oct, octal, timestamp, venus, moon, sun, name }
   })
   return ds
 })
@@ -43,7 +48,9 @@ section.border-1.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-cente
       .flex-1
       span {{ p.slice(0,2)}}
     .flex.flex-wrap.items-center.gap-1.p-2.bg-dark-200.z-10.border-2.shadow-sm.rounded-lg(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#eee':'transparent'}" @click="selectDay()") 
-      .flex-auto.w-full.op-90 {{d.oct}}
+      .flex-auto.w-full.op-90.flex.flex-wrap.gap-1
+        .flex-1.text-md {{d.oct}}
+        .text-xs {{d?.name}}
       .flex.gap-2.items-center.flex-wrap
         .text-xs.op-80 {{moonPhases[Math.round(d.moon.angle/360*8)%8]}}.{{Math.floor(d.moon.angle/360*64).toString(8).padEnd(2,'0')}}
       .flex-1 
