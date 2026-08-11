@@ -1,30 +1,57 @@
 /*
 # `octal-day` - Planetary Time Scale
 
-[NPM](https://www.npmjs.com/package/octal-day)
+A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
 
-A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - the numerical octave notes. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, try it yourself! 
-
-First published on `1-01-4321 37:16:44`.
+First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source published at [GitHub repo](https://github.com/defucc/octal-day/), that gets built into the 
+[NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octal.js.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
 
 ~~~~~~js
 */
-export const EPOCH_1=1086652800000, ERA_DAYS=88756, TRANSIT_DAYS=2920, DAY_MS=864e5,  DAY_NS=86400000000000n, TIME_SCALE=262144, MICRO_SCALE=68719476736n;
-export const toNs = (t, tz) => typeof t=='bigint' ? t + BigInt(Math.round(tz*DAY_MS))*1000000n : BigInt(Math.round(t + tz*DAY_MS))*1000000n;
+export const EPOCH_1 = 1086652800000, ERA_DAYS = 88756;
+export const TRANSIT_DAYS = 2920, DAY_MS = 864e5;
+export const DAY_NS = 86400000000000n, TIME_SCALE = 262144;
+export const MICRO_SCALE = 68719476736n;
+const toNs = (t, tz) => {  const tzMs = Math.round(tz * DAY_MS);  const tzNs = BigInt(tzMs) * 1000000n;  return typeof t === 'bigint' ? t + tzNs     : BigInt(Math.round(t + tz * DAY_MS)) * 1000000n;};
 
-export function octalDay (t=Date.now(), tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1)  {
-  let ns = toNs(t, tz) - BigInt(ep)*1000000n, d = ns/DAY_NS, r = ns%DAY_NS; if (r<0n) {d--;r+=DAY_NS}
-  let eraBig = d/BigInt(ERA_DAYS), eraRem = d%BigInt(ERA_DAYS); if(eraRem<0n){eraBig--;eraRem+=BigInt(ERA_DAYS)}
-  let e = Number(eraBig)+eo, rm = Number(eraRem); let o = (r*MICRO_SCALE/DAY_NS).toString(8).padStart(12,'0'), hi = typeof t=='bigint';
-  return `${e.toString(8)}-${(rm/TRANSIT_DAYS|0).toString(8).padStart(2,'0')}-${(rm%TRANSIT_DAYS).toString(8).padStart(4,'0')} ${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}${hi?'.'+o.slice(6,8)+':'+o.slice(8,10)+':'+o.slice(10,12):''}`;
-};
+// Convert timestamp to canonical octal-day string
+export function octalDay(t = Date.now(),   tz = -new Date().getTimezoneOffset() / 1440,   ep = EPOCH_1, eo = 1) {
+  let ns = toNs(t, tz) - BigInt(ep) * 1000000n;
+  let d = ns / DAY_NS, r = ns % DAY_NS;  if (r < 0n) { d--; r += DAY_NS; }
+  let eb = d / BigInt(ERA_DAYS);  let er = d % BigInt(ERA_DAYS);
+  if (er < 0n) { eb--; er += BigInt(ERA_DAYS); }
+  const era = (Number(eb) + eo).toString(8);  const rm = Number(er);
+  const tr = (rm / TRANSIT_DAYS | 0).toString(8).padStart(2, '0');
+  const dy = (rm % TRANSIT_DAYS).toString(8).padStart(4, '0');
+  const o = (r * MICRO_SCALE / DAY_NS).toString(8).padStart(12, '0');
+  const time = `${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}`;
+  const micro = typeof t === 'bigint' ? 
+    `.${o.slice(6,8)}:${o.slice(8,10)}:${o.slice(10,12)}` : '';  
+    return `${era}-${tr}-${dy} ${time}${micro}`;
+}
 
-export function octalDate (s, tz=-new Date().getTimezoneOffset()/1440, ep=EPOCH_1, eo=1) {
-  let [dt,tm]=s.split(' '), [e,t,d]=dt.split('-'), [std,mic]=tm.split('.');
-  let days=(parseInt(e,8)-eo)*ERA_DAYS+parseInt(t,8)*TRANSIT_DAYS+parseInt(d,8), [p1,p2,p3]=std.split(':');
-  if (mic) {let [p4,p5,p6]=mic.split(':'); return BigInt(days)*DAY_NS - BigInt(Math.round(tz*DAY_MS))*1000000n + (BigInt(parseInt(p1+p2+p3,8))*BigInt(TIME_SCALE) + BigInt(parseInt(p4+p5+p6,8)))*DAY_NS/MICRO_SCALE + BigInt(ep)*1000000n;}
-  return (days + tz + parseInt(p1+p2+p3,8)/TIME_SCALE)*DAY_MS + ep;
-};
+// Parse canonical octal-day string back to timestamp
+export function octalDate( s, 
+tz = -new Date().getTimezoneOffset() / 1440,   
+ep = EPOCH_1, eo = 1) {
+  const [dt, tm] = s.split(' ');
+  const [e, t, d] = dt.split('-');
+  const [std, mic] = tm.split('.');
+  const [p1, p2, p3] = std.split(':');
+  const days = (parseInt(e, 8) - eo) * ERA_DAYS  + parseInt(t, 8) 
+    * TRANSIT_DAYS + parseInt(d, 8);
+  if (mic) {
+    const [p4, p5, p6] = mic.split(':');
+    const tzMs = Math.round(tz * DAY_MS);
+    const tzNs = BigInt(tzMs) * 1000000n;
+    const stdNs = BigInt(parseInt(p1+p2+p3, 8)) * BigInt(TIME_SCALE);
+    const micNs = BigInt(parseInt(p4+p5+p6, 8));
+    return BigInt(days) * DAY_NS - tzNs + (stdNs + micNs) 
+      * DAY_NS / MICRO_SCALE + BigInt(ep) * 1000000n;
+  }
+  return (days + tz + parseInt(p1+p2+p3, 8) / TIME_SCALE) 
+    * DAY_MS + ep;
+}
 /*
 ~~~~~~
 
@@ -46,10 +73,10 @@ Conversely, `octalDate` reverses this by parsing the canonical string into base-
 import { octalDay, octalDate } from 'octal-day';
 
 // 1. Standard Precision (Milliseconds)
-const tzOffset = new Date().getTimezoneOffset() / 1440; // e.g., -0.333 for UTC+8
+const tzOffset = -new Date().getTimezoneOffset() / 1440; // e.g., -0.333 for UTC+8
 const ms = Date.now();
 const strMs = octalDay(ms, tzOffset); 
-// → "1-01-4321 41:74:47"
+// → "1-02-4321 41:74:47"
 
 const originalMs = octalDate(strMs, tzOffset); 
 // → 1700000000000 (Number)
@@ -59,7 +86,7 @@ const originalMs = octalDate(strMs, tzOffset);
 const longOffset = -longitude / 360; // e.g., -120 / 360 = -0.333 for 120°E
 const ns = process.hrtime.bigint(); // or getBrowserNs()
 const strNs = octalDay(ns, longOffset); 
-// → "1-01-4321 41:74:47.12:53:60"
+// → "1-02-4321 41:74:47.12:53:60"
 
 const originalNs = octalDate(strNs, longOffset); 
 // → 1700000000000123456n (BigInt)
@@ -154,7 +181,7 @@ The 73-day Petal (0o111) is deeply synchronized with the Moon, as 73 days is alm
 
 A complete temporal address looks like: `[Era]-[Transit]-[Day] [OctantSession]:[TopicTurn]:[PhraseBeat]`
 
-**Example Octal Day Time:** `1-01-4321 01:03:63`
+**Example Octal Day Time:** `1-02-4321 01:03:63`
 
 ### ⏱️ Time Fraction
 
@@ -217,6 +244,43 @@ A Petal is 73 days, which contains exactly **8 Core Octaves (64 days)** plus a 9
 
 #### 3. The 8 Years of the Octaeteris 
 Each year of the 8-year cycle takes on the character of its corresponding planet, from the swift, reactive Year 0 (Mercury) to the slow, culminating, and deeply reflective Year 7 (Neptune), before the cycle resets to 0.
+
+
+
+---
+
+
+## 🕰️ EPOCH_NAMES: A Timeline of Human Awakening
+
+Mapped to the Summer Venus Transits (Descending Node, Series 3) from the NASA/GSFC Six Millennium Catalog. Each Era spans 88,756 days (243 years).
+
+~~~~~~js
+export const EPOCH_NAMES = {
+  "-24": "The First Marks",           // 3100 BCE · Writing, quipu, songlines
+  "-23": "The Urban Geometry",        // 2857 BCE · Cities, plumbing, grids
+  "-22": "The Monument Zenith",       // 2614 BCE · Pyramids, Indus planning, Austronesian sails
+  "-21": "The Resilient Seed",        // 2371 BCE · Climate adaptation, knowledge migration
+  "-20": "The Maritime Thread",       // 2128 BCE · Sea trade, first literature, Vedic hymns
+  "-17": "The Palace Networks",       // 1885 BCE · Knossos, bronze, Thera dispersal
+  "-16": "The Bronze Correspondence", // 1642 BCE · Amarna letters, diplomacy, Olmec
+  "-15": "The First Peace",           // 1399 BCE · Hittite-Egyptian treaty, iron, alphabet
+  "-14": "The Scattered Seeds",       // 1156 BCE · Zhou Mandate, Bantu expansion, Phoenician script
+  "-13": "The Questioning",           //  913 BCE · Upanishads, Sappho, the question "Why?"
+  "-12": "The Axial Awakening",       //  670 BCE · Buddha, Confucius, Socrates, ahimsa
+   "-11": "The Compassionate Edict",   //  427 BCE · Ashoka's non-violence, Plato, Patañjali
+   "-10": "The Silk Dharma",           //  184 BCE · Buddhism spreads, Stoic logos, Sangam poetry
+   "-7": "The Syncretic Bloom",       //   60 BCE · Gandhara, paper, Nagarjuna, Long Count
+   "-6": "The Zero and the Infinite", //  303 CE  · Aryabhata, Nalanda, Gupta sciences
+   "-5": "The Parallel Libraries",    //  546 CE  · Baghdad, Chang'an, Tikal, Timbuktu
+   "-4": "The Algebraic Dawn",        //  789 CE  · Al-Khwarizmi, Song printing, compass
+   "-3": "The Institutional Light",   // 1032 CE  · Universities, Angkor Wat, ayllu
+   "-2": "The Printed World",         // 1275 CE  · Hangul, Gutenberg, Polynesian wayfinding
+   "-1": "The Empirical Dawn",        // 1518 CE  · Heliocentrism, telescope, Akbar's dialogue
+    "0": "The Measured Sky",          // 1761 CE  · Global transit observation, human rights
+    "1": "The Planetary Web",         // 2004 CE  · Open-source, climate science, digital commons
+};
+
+~~~~~~
 
 
 ---
