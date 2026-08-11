@@ -42,14 +42,14 @@ const selectDay = () => info.value.showModal()
 <template lang="pug">
 section.border-1.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-center.overflow-y-scroll.my-2px.w-full.text-light-400
   .text-lg.w-full.px-2.bg-dark-200 Era {{date.split('-')[0]}}, Transit {{date.split('-')[1]}}, Year {{Math.floor(parseInt(date.split('-')[2],8)/73/5.0).toString(8)}},  Petal {{petal.toString(8)}}
-  .grid.w-full.octave-grid.gap-1.mb-10
+  .grid.w-full.octave-grid.gap-1.p-4vw
     .flex.p-1.bg-dark-500.sticky.top-0.z-20(v-for="(p,pp) in planets") 
       span {{pp}}
       .flex-1
       span {{ p.slice(0,2)}}
     .flex.flex-wrap.items-center.gap-1.p-2.bg-dark-200.z-10.border-2.shadow-sm.rounded-lg(v-for="(d,dd) in days" :style="{opacity:d.dec<firstDay||d.dec>=lastDay?0.3:1, borderColor:d.oct==day?'#eee':'transparent'}" @click="selectDay()") 
       .flex-auto.w-full.op-90.flex.flex-wrap.gap-1
-        .flex-1.text-md {{d.oct}}
+        .flex-1.text-sm {{d.oct}}
         .text-xs {{d?.name}}
       .flex.gap-2.items-center.flex-wrap
         .text-xs.op-80 {{moonPhases[Math.round(d.moon.angle/360*8)%8]}}.{{Math.floor(d.moon.angle/360*64).toString(8).padEnd(2,'0')}}
