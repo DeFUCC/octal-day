@@ -25,36 +25,28 @@ const progress = computed(() => ERA_1)
 </script>
 
 <template lang="pug">
-section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400
-    .p-8.text-center.font-mono
-        h1.text-4xl {{day}}
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Era 
-            .text-4xl.font-mono {{day.split('-')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch Era 0 lasted 243 years and passed between the moment Captain Cook observed the Venus Transit and 2012 live video broadcast of the next Transit opened the Era 1 of another 88756 days long ride. 
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Transit
-            .text-4xl.font-mono {{day.split('-')[1]}}
-        .flex.flex-col
-            .text-md.max-w-45ch A Transit is the Octaeteris - the 8 resonance between 8 Solar years, 5 Venus synodic cycles and 99 Moon cycles at 2920 days - 30.4 such cycles, so we will see 00-36 on this dial
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Day
-            .text-4xl.font-mono {{day.split('-')[2].split(' ')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch We count from 0000 till 5550 and reset
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Session
-            .text-4xl.font-mono {{day.split(' ')[1].split(':')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch It's the octant {{day.split(' ')[1].split(':')[0][0]}} and the sesion {{day.split(' ')[1].split(':')[0][1]}} in it.
-    .flex-1
-    .bg-dark-800.p-1.op-20.hover-op-80.transition.flex.gap-2
-        a(href="https://github.com/defucc/octal-day" target="_blank") Code available at defucc/octal-day
-        .flex-1
-        .op-90 v.{{version}}
+section.bg-dark-100.w-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400.text-sm.max-w-55ch.p-2.my-auto.rounded-xl.shadow-xl
+    .p-2.text-center.font-mono.flex.justify-center
+        .bg-dark-800.text-xl.p-1.rounded.shadow {{day}}
+
+    .p-2.flex.justify-center.gap-2.items-center
+        code octal-day v.{{version}}
+        a.underline(href="https://npmjs.org/package/octal-day" target="_blank") NPM
+        a.underline(href="https://github.com/defucc/octal-day" target="_blank") GitHub
+    .p-2 A 0-dependency UNIX timestamp deep time grounding system in a base-8 string representation. 
+    pre.p-4.bg-dark-600.whitespace-pre-wrap pnpm i octal-day
+    .p-2 Based on Venus transit long cycle (88756 days) and short cycle (2920 days), it provides an octal grid for observational astronomy and inner Solar system cycles approximation, that enables new ways of time navigation.
+    pre.p-4.bg-dark-600.text-xs.whitespace-pre-wrap.
+        import {octalDay, octalDate} from 'octal-day'
+        const now = Date.now() // 1786519637731
+        const octal = octalDay(now) // "1-02-4324 01:15:51"
+        const timestamp = octalDate(octal) //1786519637731
+    .p-2 It takes a regular <code>Date.now()</code> timestamp in ms or the high precision nanosecond BigInt timestamp <code>performance.timeOrigin + performance.now()</code> and outputs a string that represents this moment on a continuous day counter, that connects the point in time with motions of Sun, Venus and Moon.
+    .p-2 The octal representation shows current Era, Transit, Day in the transit and time as the octal fraction of the local day.
 </template>
+
+<style scoped>
+code {
+    @apply p-1 rounded-lg bg-dark-600
+}
+</style>

@@ -1,70 +1,60 @@
 <script setup>
+import { useNow } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { octalDay, EPOCH_1 } from '../../README.md'
+import { version } from '../../package.json'
+import { planets } from '../useDay.js'
 
-import { recentSolstice, octaeteride, era, octaeteris, year, currentStart, dayCount, octaveCount, seasonCount, transits, jd0Astro, yearLength, startMoon, nextMoon, moonCycle, startSolstice, CALENDAR_EPOCH, yearsPassed, historicalTransits } from '../astro.js';
-import { now, astro, octaDays, octime, coord, dayFraction, octalDayFraction as odf } from '../useDay.js';
-import { computed } from 'vue'
+const now = useNow()
+const day = computed(() => octalDay(now.value.getTime()))
+const inputDate = ref()
+const inputDay = ref('034422')
+const inputTime = ref('236533')
 
-function octal(n, s) {
-  const oct = n.toString(8)
-  if (s) { return oct.slice(0, s) } else { return oct }
-}
+const VENUS_T0 = new Date(`1761-06-06T05:19:00Z`)  // -6581846460000 
+const VENUS_T1 = new Date(`1769-06-03T22:25:00Z`) // -6329583300000
+const UNIX_EPOCH = new Date(`1970-01-01T00:00:00Z`) // 0
+const UNIX_DAY = new Date(`1970-01-02T00:00:00Z`) // 86400000
+const VENUS_T2 = new Date(`2004-06-08T08:20:00Z`) // 1086682800000
+const VENUS_T3 = new Date(`2012-06-06T01:29:00Z`) // 1338946140000
+const VENUS_T4 = new Date(`2247-06-11T11:33:00Z`) // 8755212780000
+const VENUS_T5 = new Date(`2255-06-09T04:38:00Z`) // 9007475880000
 
+const progress = computed(() => ERA_1)
 
-async function getLocation() {
-  let position
-  try {
-    position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 5000 });
-    });
-    coord.value.longitude = position.coords.longitude
-    coord.value.latitude = position.coords.latitude
-    coord.value.altitude = position.coords.altitude || 0
-  } catch (e) { console.log(e) }
-
-}
-
-const geoCapable = navigator?.geolocation
 </script>
 
 <template lang="pug">
-section.border-1.bg-orange-50.shadow-xl.flex-auto.p-4.gap-2.flex.flex-col.overflow-y-scroll.text-sm.max-w-55ch.mx-auto.my-2px
-  blockquote.bg-orange-100.p-2.text-xl.font-italic What time is it now? 
-  
-  p Your computer thinks it is <code>{{+now}}</code> milliseconds since midnight <code>{{new Date(0).toLocaleDateString()}}</code>, Gregorian calendar will show <code>{{now.toLocaleDateString()}}</code> and the digital clock would display <code>{{now.toLocaleTimeString()}}</code>. It is the <code>{{astro.ut.toFixed(5)}}</code> Julian Day now from astronomical Epoch tables from noon <code>{{jd0Astro.date.toLocaleDateString()}}</code> along the prime meridian. This is all a big mess of counting bases, historical quirks and dead empires remnants.
-  
-  p What if we would use the Solar system itself as the time keeping device? We would study cycles. First - the orbital rates for all the 8 planets. Of course starting with the Earth and its rotation.
-
-  h2.font-bold.text-lg Earth
-
-  p First we need to know where we are on the planet. The web browser provides the timezone information, so we can estimate the location from the offset minutes we get from it - <code>{{(new Date()).getTimezoneOffset()/60}}</code> hours, which approximates longitude at <code>{{(new Date()).getTimezoneOffset()/4}}&deg;</code>. 
-    span For more precision type in your longitude 
-    input.p-1.bg-gray-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.longitude")
-    span ,&nbsp;latitude 
-    input.p-1.bg-gray-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.latitude")
-    span &nbsp;and altitude 
-    input.p-1.bg-gray-300.rounded-sm.display-inline.h-5.w-5ch.text-center(v-model="coord.altitude")
-    span &nbsp;or just use your device 
-    button.display-inline.px-1.py-1px.bg-gray-200.rounded-lg.shadow-lg(v-if="geoCapable" @click="getLocation()") Location
-    span  to get better estimate of local time. Now let's look at the fraction.
-  
-  ul.flex.flex-col.gap-2
-    li <b>Decimal</b>:  <code>{{dayFraction.toFixed(6)}}</code> - this is not particularly meaningful, yet revealing the core pattern - the day fraction gives us more precision with each digit we might. Just the <code>{{dayFraction.toFixed(6)[2]}}</code> <i>'decidays'</i>,  <code>{{dayFraction.toFixed(6).slice(2,4)}}</code><i>'centidays'</i> or <code>{{dayFraction.toFixed(6).slice(2,5)}}</code> <i>'millidays'</i> are not particularly convenient for daily use. Let's look at other options. 
-    li <b>Binary</b>:  <code>{{dayFraction.toString(2).slice(0,20)}}</code> - this is a choice tree. Each digit is a halving - a switch between 'earlier' and 'later' than the middle of a whole unit. This is much more meaningful - we're in half <code>{{dayFraction.toString(2).slice(2,3)}}</code>, quarter  <code>{{dayFraction.toString(2).slice(2,4)}}</code>, quaver  <code>{{dayFraction.toString(2).slice(2,5)}}</code>, etc. This might be convenient, but a bit too verbose to say. We can compress this structure preserving the halving meaning by grouping the binary digits together - we can look at quaternary, octal, hexadecimal representations and find that 8 is the correct scale as clear consequence of 3D space we inhabit not only with bodies, but also our minds that are highly specialized to process spatial data. 
-    li <b>Octal</b>:  <code class="octal">{{dayFraction.toString(8).slice(0,8)}}</code> - this is the octree of time, that balances informational density and semantics. Each digit is a 1/8 recursive step - an octave group of 3 binary choices between 'early' and 'late' parts of a whole unit. This quite intuitive too - we're in octant <code class="octal">{{dayFraction.toString(8).slice(2,3)}}</code>, session  <code class="octal">{{dayFraction.toString(8).slice(3,4)}}</code>, topic  <code class="octal">{{dayFraction.toString(8).slice(4,5)}}</code>, etc. Especially if we look at pairs and be aware of 3 main scales - daytime, internal event structure, rhythm and phrasing: session  <code class="octal">{{dayFraction.toString(8).slice(2,4)}}</code>, turn  <code class="octal">{{dayFraction.toString(8).slice(4,6)}}</code>, beat  <code class="octal">{{dayFraction.toString(8).slice(6,8)}}</code> - it's  i-ching hexagrams and a melody built from intervals. 
-
-  .text-lg So we can say that now it's the  octant <code class="octal">{{odf[0]}}</code>,  session <code class="octal">{{odf[1]}}</code>,  topic <code class="octal">{{odf[2]}}</code>, turn <code class="octal">{{odf[3]}}</code>, phrase  <code class="octal">{{odf[4]}}</code> and  beat <code class="octal">{{odf[5]}}</code>.
-
-
+section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400
+    .p-8.text-center.font-mono
+        h1.text-4xl {{day}}
+    .p-8.bg-dark-300.flex.gap-8.items-center
+        .flex.flex-col.items-center
+            h2.text-2xl.font-bold Era 
+            .text-4xl.font-mono {{day.split('-')[0]}}
+        .flex.flex-col
+            .text-md.max-w-45ch Era 0 lasted 243 years and passed between the moment Captain Cook observed the Venus Transit and 2012 live video broadcast of the next Transit opened the Era 1 of another 88756 days long ride. 
+    .p-8.bg-dark-300.flex.gap-8.items-center
+        .flex.flex-col.items-center
+            h2.text-2xl.font-bold Transit
+            .text-4xl.font-mono {{day.split('-')[1]}}
+        .flex.flex-col
+            .text-md.max-w-45ch A Transit is the Octaeteris - the 8 resonance between 8 Solar years, 5 Venus synodic cycles and 99 Moon cycles at 2920 days - 30.4 such cycles, so we will see 00-36 on this dial
+    .p-8.bg-dark-300.flex.gap-8.items-center
+        .flex.flex-col.items-center
+            h2.text-2xl.font-bold Day
+            .text-4xl.font-mono {{day.split('-')[2].split(' ')[0]}}
+        .flex.flex-col
+            .text-md.max-w-45ch We count from 0000 till 5550 and reset
+    .p-8.bg-dark-300.flex.gap-8.items-center
+        .flex.flex-col.items-center
+            h2.text-2xl.font-bold Session
+            .text-4xl.font-mono {{day.split(' ')[1].split(':')[0]}}
+        .flex.flex-col
+            .text-md.max-w-45ch It's the octant {{day.split(' ')[1].split(':')[0][0]}} and the sesion {{day.split(' ')[1].split(':')[0][1]}} in it.
+    .flex-1
+    .bg-dark-800.p-1.op-20.hover-op-80.transition.flex.gap-2
+        a(href="https://github.com/defucc/octal-day" target="_blank") Code available at defucc/octal-day
+        .flex-1
+        .op-90 v.{{version}}
 </template>
-
-
-<style scoped>
-code,
-input.code {
-  @apply bg-gray-200 px-1 py-1px rounded-lg text-sm
-}
-
-code.octal {
-  @apply bg-orange-200 font-bold
-}
-</style>
