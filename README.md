@@ -1,10 +1,11 @@
 /*
 # `octal-day` - Planetary Time Scale
 
-A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
+A self-contained inner Solar system deep time octal timestamp grounding system based on Earth-Venus orbital resonance and base-8 number patterns observation. 
 
-First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source published at [GitHub repo](https://github.com/defucc/octal-day/), that gets built into the 
-[NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octal.js.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
+Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
+
+First published on day `1-02-4321 37:16:44`, last updated on day `1-02-4324 53:31:15`, this code is the single canonical source published at [GitHub repo](https://github.com/davay42/octal-day/), that gets built into the [NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octal.js.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
 
 ~~~~~~js
 */
@@ -12,10 +13,17 @@ export const EPOCH_1 = 1086652800000, ERA_DAYS = 88756;
 export const TRANSIT_DAYS = 2920, DAY_MS = 864e5;
 export const DAY_NS = 86400000000000n, TIME_SCALE = 262144;
 export const MICRO_SCALE = 68719476736n;
-const toNs = (t, tz) => {  const tzMs = Math.round(tz * DAY_MS);  const tzNs = BigInt(tzMs) * 1000000n;  return typeof t === 'bigint' ? t + tzNs     : BigInt(Math.round(t + tz * DAY_MS)) * 1000000n;};
+const toNs = (t, tz) => {  
+  const tzMs = Math.round(tz * DAY_MS);  
+  const tzNs = BigInt(tzMs) * 1000000n;  
+  return typeof t === 'bigint' ? t + tzNs
+   : BigInt(Math.round(t + tz * DAY_MS)) * 1000000n;};
 
 // Convert timestamp to canonical octal-day string
-export function octalDay(t = Date.now(),   tz = -new Date().getTimezoneOffset() / 1440,   ep = EPOCH_1, eo = 1) {
+export function octalDay(t = Date.now(), 
+  tz = -new Date().getTimezoneOffset() / 1440,   
+  ep = EPOCH_1, eo = 1
+  ) {
   let ns = toNs(t, tz) - BigInt(ep) * 1000000n;
   let d = ns / DAY_NS, r = ns % DAY_NS;  if (r < 0n) { d--; r += DAY_NS; }
   let eb = d / BigInt(ERA_DAYS);  let er = d % BigInt(ERA_DAYS);
@@ -27,13 +35,14 @@ export function octalDay(t = Date.now(),   tz = -new Date().getTimezoneOffset() 
   const time = `${o.slice(0,2)}:${o.slice(2,4)}:${o.slice(4,6)}`;
   const micro = typeof t === 'bigint' ? 
     `.${o.slice(6,8)}:${o.slice(8,10)}:${o.slice(10,12)}` : '';  
-    return `${era}-${tr}-${dy} ${time}${micro}`;
+  return `${era}-${tr}-${dy} ${time}${micro}`;
 }
 
 // Parse canonical octal-day string back to timestamp
-export function octalDate( s, 
-tz = -new Date().getTimezoneOffset() / 1440,   
-ep = EPOCH_1, eo = 1) {
+export function octalDate(s, 
+  tz = -new Date().getTimezoneOffset() / 1440,   
+  ep = EPOCH_1, eo = 1
+  ) {
   const [dt, tm] = s.split(' ');
   const [e, t, d] = dt.split('-');
   const [std, mic] = tm.split('.');
