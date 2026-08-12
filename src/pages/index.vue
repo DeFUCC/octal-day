@@ -33,16 +33,12 @@ section.bg-dark-100.w-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400.
         code octal-day v.{{version}}
         a.underline(href="https://npmjs.org/package/octal-day" target="_blank") NPM
         a.underline(href="https://github.com/defucc/octal-day" target="_blank") GitHub
-    .p-2 A 0-dependency UNIX timestamp deep time grounding system in a base-8 string representation. 
+    .p-2 A fractal, base-8 temporal coordinate system grounded in the 243-year Earth-Venus orbital resonance.
+    .p-2 <code>octal-day</code> replaces arbitrary administrative calendars with the actual, unbroken rhythms of the inner solar system. Anchored by the 88,756-day and 2920-day Venus transit cycles and expressed through the native base-8 geometry of binary computing, it provides a mathematically pure timeline that scales seamlessly from 243-year macro-eras down to microsecond precision. Free from leap-year hacks and mythological naming conventions, it is an open-source instrument for developers, astronomers, and observers to ground their code, hardware, and daily lives in the observable truth of the cosmos.
     pre.p-4.bg-dark-600.whitespace-pre-wrap pnpm i octal-day
     .p-2 Based on Venus transit long cycle (88756 days) and short cycle (2920 days), it provides an octal grid for observational astronomy and inner Solar system cycles approximation, that enables new ways of time navigation.
-    pre.p-4.bg-dark-600.text-xs.whitespace-pre-wrap.
-        import {octalDay, octalDate} from 'octal-day'
-        const now = Date.now() // 1786519637731
-        const octal = octalDay(now) // "1-02-4324 01:15:51"
-        const timestamp = octalDate(octal) //1786519637731
     .p-2 It takes a regular <code>Date.now()</code> timestamp in ms or the high precision nanosecond BigInt timestamp <code>performance.timeOrigin + performance.now()</code> and outputs a string that represents this moment on a continuous day counter, that connects the point in time with motions of Sun, Venus and Moon.
-    .p-2 The octal representation shows current Era, Transit, Day in the transit and time as the octal fraction of the local day.
+    .p-2 The octal representation shows current Era-Transit-Day base-8 count and time as the octal fraction of the local day.
 </template>
 
 <style scoped>
