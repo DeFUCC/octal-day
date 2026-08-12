@@ -54,7 +54,7 @@ section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.gap-2.text-lig
             .text-md.max-w-45ch It's the octant {{day.split(' ')[1].split(':')[0][0]}} and the sesion {{day.split(' ')[1].split(':')[0][1]}} in it.
     .flex-1
     .bg-dark-800.p-1.op-20.hover-op-80.transition.flex.gap-2
-        a(href="https://github.com/defucc/octal-day" target="_blank") Code available at defucc/octal-day
+        a(href="https://github.com/davay42/octal-day" target="_blank") Code available at davay42/octal-day
         .flex-1
         .op-90 v.{{version}}
 </template>

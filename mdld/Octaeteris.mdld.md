@@ -1,4 +1,4 @@
-[oct] <tag:octal.defucc.me,2026:>
+[oct] <tag:octal.js.org,2026:>
 
 
 # Octaeteris Calendar — Foundation Knowledge Graph {=oct:root .prov:Entity label}
