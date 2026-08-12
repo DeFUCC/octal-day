@@ -4,7 +4,7 @@
 A self-contained inner Solar system deep time octal timestamp grounding based on Earth-Venus orbital resonance and base-8 number patterns observation. Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
 
 First published on `1-02-4321 37:16:44`, last updated on `1-02-4323 62:47:64`, this code is the single canonical source published at [GitHub repo](https://github.com/defucc/octal-day/), that gets built into the 
-[NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octal.js.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
+[NPM package](https://www.npmjs.com/package/octal-day) and is imported in the [demo web-app](https://octalday.org/). Notice the JS comment symbols at the start of the document and around the code - they enable it to be imported as a valid ESM module, providing these two self-contained functions:
 
 ~~~~~~js
 */
