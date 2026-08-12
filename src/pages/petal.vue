@@ -28,12 +28,14 @@ const days = computed(() => {
     const sun = SunPosition(timestamp)
     let name
     let octave
-    if ([initialOctave.value, finalOctave.value].includes(oct.slice(0, 3))) {
 
+    if ([initialOctave.value, finalOctave.value].includes(oct.slice(0, 3))) {
       if (dec == firstDay.value) {
         name = planets[firstDay.value % 8].slice(0, 2) + ' ' + Math.floor(parseInt(date.value.split('-')[2], 8) / 73 / 8.0).toString(8)
-      } else {
+      } else if (dec > firstDay.value || dec < lastDay.value) {
         name = planets[firstDay.value % 8].slice(0, 2) + planets[dec % 8].slice(0, 2)
+      } else {
+
       }
     } else {
 

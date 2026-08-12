@@ -2,7 +2,7 @@
   "name": "octal-day",
   "version": "0.8.6",
   "description": "Planetary Time Scale",
-  "homepage": "https://octalday.org/",
+  "homepage": "https://octal.js.org/",
   "repository": {
     "type": "git",
     "url": "https://github.com/defucc/octal-day.git"
