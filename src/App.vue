@@ -11,8 +11,9 @@ main.h-100svh.flex.flex-col.items-center.text-light-400
         //- RouterLink(to="/derivation") Derivation
         //- RouterLink(to="/day") Day
         RouterLink(to="/time") Time
-        RouterLink(to="/Petal") Petal
+        RouterLink(to="/day") Day
         RouterLink(to="/octave") Octave
+        RouterLink(to="/Petal") Petal
         RouterLink(to="/earth") Earth
         RouterLink(to="/moon") Moon
         //- RouterLink(to="/venus") Venus

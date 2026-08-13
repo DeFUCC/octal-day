@@ -11,50 +11,38 @@ const inputDate = ref()
 const inputDay = ref('034422')
 const inputTime = ref('236533')
 
-const VENUS_T0 = new Date(`1761-06-06T05:19:00Z`)  // -6581846460000 
-const VENUS_T1 = new Date(`1769-06-03T22:25:00Z`) // -6329583300000
-const UNIX_EPOCH = new Date(`1970-01-01T00:00:00Z`) // 0
-const UNIX_DAY = new Date(`1970-01-02T00:00:00Z`) // 86400000
-const VENUS_T2 = new Date(`2004-06-08T08:20:00Z`) // 1086682800000
-const VENUS_T3 = new Date(`2012-06-06T01:29:00Z`) // 1338946140000
-const VENUS_T4 = new Date(`2247-06-11T11:33:00Z`) // 8755212780000
-const VENUS_T5 = new Date(`2255-06-09T04:38:00Z`) // 9007475880000
-
 const progress = computed(() => ERA_1)
 
 </script>
 
 <template lang="pug">
-section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400
+section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.items-center.gap-2.text-light-400.p-4
     .p-8.text-center.font-mono
-        h1.text-4xl {{day}}
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Era 
-            .text-4xl.font-mono {{day.split('-')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch Era 0 lasted 243 years and passed between the moment Captain Cook observed the Venus Transit and 2012 live video broadcast of the next Transit opened the Era 1 of another 88756 days long ride. 
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Transit
-            .text-4xl.font-mono {{day.split('-')[1]}}
-        .flex.flex-col
-            .text-md.max-w-45ch A Transit is the Octaeteris - the 8 resonance between 8 Solar years, 5 Venus synodic cycles and 99 Moon cycles at 2920 days - 30.4 such cycles, so we will see 00-36 on this dial
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Day
-            .text-4xl.font-mono {{day.split('-')[2].split(' ')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch We count from 0000 till 5550 and reset
-    .p-8.bg-dark-300.flex.gap-8.items-center
-        .flex.flex-col.items-center
-            h2.text-2xl.font-bold Session
+        h1.text-4xl {{day.split(' ')[1]}}
+    .grid.gap-4.max-w-65ch(style="  grid-template-columns: 8em 1fr")
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Session
             .text-4xl.font-mono {{day.split(' ')[1].split(':')[0]}}
-        .flex.flex-col
-            .text-md.max-w-45ch It's the octant {{day.split(' ')[1].split(':')[0][0]}} and the sesion {{day.split(' ')[1].split(':')[0][1]}} in it.
-    .flex-1
-    .bg-dark-800.p-1.op-20.hover-op-80.transition.flex.gap-2
-        a(href="https://github.com/davay42/octal-day" target="_blank") Code available at davay42/octal-day
-        .flex-1
-        .op-90 v.{{version}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch Each day is divided into 8 even octants <code>3</code> hours each. Each octant contains 8 sessions of <code>22.5 minutes</code>. It's the session {{day.split(' ')[1].split(':')[0][1]}} in the octant {{day.split(' ')[1].split(':')[0][0]}} of this day now, or just session {{day.split(' ')[1].split(':')[0]}}.
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Turn
+            .text-4xl.font-mono {{day.split(' ')[1].split(':')[1]}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch Each session has 8 topics of <code>2.8125</code> minutes, each containing 8 turns of <code>21.09375</code> seconds. It's the topic {{day.split(' ')[1].split(':')[1][0]}} and the turn {{day.split(' ')[1].split(':')[1][1]}} in it now, or simply turn {{day.split(' ')[1].split(':')[1]}}.
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Beat
+            .text-4xl.font-mono {{day.split(' ')[1].split(':')[2]}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch It's the phrase {{day.split(' ')[1].split(':')[2][0]}} and the beat {{day.split(' ')[1].split(':')[2][1]}} in it.
+
 </template>
+
+<style scoped>
+code {
+    @apply py-1 px-2 rounded-lg bg-dark-600
+}
+</style>

@@ -50,7 +50,7 @@ const days = computed(() => {
 </script>
 
 <template lang="pug">
-section.border-1.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-center.my-2px.w-full.text-light-400
+section.bg-dark-800.shadow-xl.flex-auto.gap-2.flex.flex-col.items-center.my-2px.w-full.text-light-400
   .text-lg.w-full.px-2.bg-dark-200 Era {{date.split('-')[0]}}, Transit {{date.split('-')[1]}}, Sun {{Math.floor(parseInt(date.split('-')[2],8)/73/5.0).toString(8)}}, Venus {{Math.floor(parseInt(date.split('-')[2],8)/73/8.0).toString(8)}},  Petal {{petal.toString(8)}}
   .grid.w-full.octave-grid.gap-1.p-4vw
     .flex.p-1.bg-dark-500.sticky.top-0.z-20(v-for="(p,pp) in planets") 

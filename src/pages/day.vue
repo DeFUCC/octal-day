@@ -1,64 +1,49 @@
 <script setup>
-import { now, astro, octaDays, dayFraction, octalDayFraction, levels, colors } from '../useDay.js';
+import { useNow } from '@vueuse/core'
+import { computed, ref } from 'vue'
+import { octalDay, EPOCH_1 } from '../../README.md'
+import { version } from '../../package.json'
+import { planets } from '../useDay.js'
 
+const now = useNow()
+const day = computed(() => octalDay(now.value.getTime()))
+const inputDate = ref()
+const inputDay = ref('034422')
+const inputTime = ref('236533')
 
-
-const marks = levels.map((level, l) => {
-  const scale = Math.pow(8, l + 1)
-  const subdivision = 1 / scale
-  const subs = []
-  for (let s = 0; s <= scale; s++) {
-    subs.push(subdivision * s)
-  }
-  return subs
-})
+const progress = computed(() => ERA_1)
 
 </script>
 
 <template lang="pug">
-section.bg-orange-100.flex.flex-col.w-95vw.h-80vh.mt-10vh
-
-
-  .w-full.flex.flex-col.relative.flex-auto
-
-
-    .w-full.h-1px.bg-gray.absolute.op-80(:style="{top:`${mark*100}%`}" v-for="mark in marks[1]" :key="mark")
-
-    .w-full.h-2px.bg-black.absolute(:style="{top:`${mark*100}%`}" v-for="mark in marks[0]" :key="mark")
-
-
-    .w-full.absolute.op-90.flex.flex-col.justify-end.transition(:style="{bottom:dayFraction*100+'%'}")
-      .text-dark-800.p-2.bg-orange-600.bg-op-90.flex.gap-1()
-        .font-bold {{((Math.floor(dayFraction*8)).toString(8))}} 
-        span octant
-      .h-2px.w-full.bg-orange
-
-    .w-full.absolute.op-90.flex.flex-col.justify-end.transition(:style="{bottom:(dayFraction*8)%1*100+'%'}")
-      .text-dark-800.p-2.bg-orange-500.bg-op-90.flex.gap-1()
-        .font-bold {{((Math.floor((dayFraction*8)%1*8)).toString(8))}} 
-        span session
-      .h-2px.w-full.bg-orange-800
-
-    .w-full.absolute.op-90.flex.flex-col.justify-end.transition(:style="{bottom:(dayFraction*64)%1*100+'%'}")
-      .text-dark-800.p-2.bg-orange-400.bg-op-90.flex.gap-1()
-        .font-bold {{((Math.floor((dayFraction*64)%1*8)).toString(8))}} 
-        span topic
-      .h-2px.w-full.bg-orange-800
-
-    .w-full.absolute.op-90.flex.flex-col.justify-end.transition(:style="{bottom:(dayFraction*512)%1*100+'%'}")
-      .text-dark-800.p-2.bg-orange-300.bg-op-90.flex.gap-1()
-        .font-bold {{((Math.floor((dayFraction*512)%1*8)).toString(8))}} 
-        span turn
-      .h-2px.w-full.bg-orange-800
-
-    .w-full.absolute.op-90.flex.flex-col.justify-end.transition(:style="{bottom:(dayFraction*4096)%1*100+'%'}")
-      .text-dark-800.p-2.bg-orange-200.bg-op-90.flex.gap-1()
-        .font-bold {{((Math.floor((dayFraction*4096)%1*8)).toString(8))}} 
-        span phrase
-      .h-2px.w-full.bg-orange-800
-
-    .w-full.absolute.op-70.flex.flex-col.justify-end.transition(:style="{bottom:(dayFraction*4096*8)%1*100+'%'}")
-      .h-1px.w-full.bg-orange-800
-
+section.bg-dark-100.w-full.h-full.overflow-y-scroll.flex.flex-col.items-center.gap-2.text-light-400.p-4
+    .p-8.text-center.font-mono
+        h1.text-4xl {{day.split(' ')[0]}}
+    .grid.gap-4.max-w-65ch(style="  grid-template-columns: 8em 1fr")
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Era 
+            .text-4xl.font-mono {{day.split('-')[0]}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch 
+            Era 0 lasted <code>243</code> years and passed between the moment Mikhail Lomonosov observed the Venus cross the disc of the Sun in <code>1761</code> and <code>2004</code> live video broadcast of the next transit VT-2004 opened the Era 1 for another <code>88756</code> days long ride. 
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Transit
+            .text-4xl.font-mono {{day.split('-')[1]}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch A Transit is the Octaeteris - the <code>8:5:13</code> resonance between 8 Solar years, 5 Venus synodic cycles and 99 Moon cycles at <code>2920</code> days - <code>30.4</code> such cycles, so we will see 00-36 on this dial until next Era transit observation.
+    
+        .flex.flex-col.items-center.p-4.bg-dark-400.justify-center
+            h2.text-2xl Day
+            .text-4xl.font-mono {{day.split('-')[2].split(' ')[0]}}
+        .flex.flex-col.p-4.justify-center.bg-dark-300
+            .text-md.max-w-45ch We count from 0000 till 5550 and reset, incrementing by one Transit
 
 </template>
+
+<style scoped>
+code {
+    @apply py-1 px-2 rounded-lg bg-dark-600
+}
+</style>
