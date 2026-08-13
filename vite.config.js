@@ -25,6 +25,7 @@ export default defineConfig({
     port: '4222'
   },
   plugins: [
+    vue(),
     VueRouter({
       routesFolder: [
         { src: "src/pages" }
@@ -45,7 +46,7 @@ export default defineConfig({
       extractors: [extractorSplit, extractorPug()],
     }),
     viteSingleFile(),
-    vue(),
+    viteBuildScript(),
   ],
 })
 
