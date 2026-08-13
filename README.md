@@ -1,7 +1,7 @@
 /*
 # `octal-day` - Planetary Time Scale
 
-A self-contained inner Solar system deep time octal timestamp grounding system based on Earth-Venus orbital resonance and base-8 number patterns observation. 
+A lossless numeric codec that encodes timestamps into hierarchical base-8 notation. Implements bijective radix conversion with configurable scaling constants, tuned to the Venus-Earth 5:8:13 resonance.
 
 Modern standard way to express octal numbers looks like this: `0o1245670` - a zero-oh prefix - the lemniscate `∞` - followed by 0-7 digits - octaves and octants of 8 distinct notes. Each digit is equivalent to a 3D group of binary choices - 2^3 - 3 halvings or duplications. We can convert any number to octal right in the browser console via `73.0.toString(8)` and back as `Number('0o111')`, you can try it yourself any time! 
 

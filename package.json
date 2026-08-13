@@ -18,9 +18,11 @@
     "octal",
     "base8",
     "venus",
-    "ephemeris",
+    "codec",
     "generative-art",
-    "clock"
+    "clock",
+    "bijective",
+    "radix-8"
   ],
   "engines": {
     "node": "^24.x"
