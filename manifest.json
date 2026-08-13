@@ -1,0 +1,59 @@
+{
+	"id": "octal-day",
+	"dir": "ltr",
+	"lang": "en",
+	"name": "Octal Day",
+	"short_name": "Octal",
+	"description": "Base-8 Venus Transit time grid",
+	"start_url": "/",
+	"background_color": "#000000",
+	"theme_color": "#000000",
+	"display": "standalone",
+	"orientation": "any",
+	"display_override": [
+		"window-controls-overlay",
+		"minimal-ui",
+		"standalone"
+	],
+	"handle_links": "preferred",
+	"prefer_related_applications": false,
+	"categories": [
+		"education",
+		"time",
+		"astronomy"
+	],
+	"icons": [
+		{
+			"src": "./icon.svg",
+			"sizes": "any",
+			"type": "image/svg+xml",
+			"purpose": "any"
+		},
+		{
+			"src": "./icon.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "./screenshot-w.jpg",
+			"type": "image/jpg",
+			"sizes": "1280x720",
+			"form_factor": "wide"
+		},
+		{
+			"src": "./screenshot-n.jpg",
+			"type": "image/jpg",
+			"sizes": "720x1280",
+			"form_factor": "narrow"
+		}
+	],
+	"launch_handler": {
+		"client_mode": [
+			"navigate-existing",
+			"auto"
+		]
+	}
+}
