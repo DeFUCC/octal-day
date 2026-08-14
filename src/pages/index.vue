@@ -42,6 +42,7 @@ section.bg-dark-100.w-full.overflow-y-scroll.flex.flex-col.gap-2.text-light-400.
     .p-2 This very web-application uses the library extensively to explore the possible time organization patterns that emerge from the interactions with these scales. We explore how day fractions look on the screen and feel like when you synchronize for a turn, a topic or a whole session. We can see the whole octave of 8 days as our compact symmetric cycle or the whole 73-day petal an once. 
     .p-2 It takes a regular <code>Date.now()</code> timestamp in ms or the high precision nanosecond BigInt timestamp <code>performance.timeOrigin + performance.now()</code> and outputs a string that represents this moment on a continuous day counter, that connects the point in time with motions of Sun, Venus and Moon.
     .p-2 The octal representation shows current Era-Transit-Day base-8 count and time as the octal fraction of the local day.
+
 </template>
 
 <style scoped>
