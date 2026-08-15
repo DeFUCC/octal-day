@@ -40,7 +40,7 @@ const days = computed(() => {
     } else {
 
       octave = parseInt(oct.slice(0, 3), 8) - parseInt(initialOctave.value, 8) - 1
-      name = planets[firstDay.value % 8].slice(0, 2) + planets[octave].slice(0, 2) + planets[dec % 8].slice(0, 2)
+      name = planets[firstDay.value % 8].slice(0, 2) + (planets[octave] || '').slice(0, 2) + planets[dec % 8].slice(0, 2)
     }
     return { dec, oct, octal, timestamp, venus, moon, sun, name, octave }
   })
